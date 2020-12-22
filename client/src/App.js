@@ -10,6 +10,29 @@ import Main from "./features/main";
 import "./App.css";
 
 const theme = createMuiTheme({
+  typography: {
+    // In Chinese and Japanese the characters are usually larger,
+    // so a smaller fontsize may be appropriate.
+    h1: {
+      fontSize: "2rem",
+    },
+    h2: {
+      fontSize: "1.5rem",
+    },
+    h3: {
+      fontSize: "1.1rem",
+    },
+    h4: {
+      fontSize: "1rem",
+    },
+    h5: {
+      fontSize: "0.8rem",
+    },
+    h6: {
+      fontSize: "0.6rem",
+    },
+    fontSize: 16,
+  },
   palette: {
     type: "light",
     // primary: {
