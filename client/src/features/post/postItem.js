@@ -31,7 +31,7 @@ const PostItem = ({ title, text, author, tags, time, id, tokens }) => {
           <Typography variant="h2">
             {" "}
             <strong>
-              {title} [{tokens} cbs]
+              {title} [{tokens} csb]
             </strong>{" "}
           </Typography>
           <Typography variant="body1">{text}</Typography>

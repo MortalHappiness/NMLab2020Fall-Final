@@ -52,7 +52,7 @@ const Post = ({ title, text, author, tags, time, tokens }) => {
       <CardContent>
         <Typography variant="h1">
           <strong>
-            {title} [{tokens} cbs]
+            {title} [{tokens} csb]
           </strong>
         </Typography>
         <Typography variant="body1">{text}</Typography>
