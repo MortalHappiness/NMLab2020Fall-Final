@@ -5,6 +5,7 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,11 +15,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PostItem = ({ title, text, author, tags, time }) => {
+const PostItem = ({ title, text, author, tags, time, id }) => {
   const classes = useStyles();
   return (
     <Card className={classes.root} variant="outlined">
-      <CardActionArea>
+      <CardActionArea component={Link} to={`/post/${id}`}>
         <CardContent>
           <Typography variant="h2">
             {" "}

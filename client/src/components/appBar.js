@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
 import Bar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -15,16 +16,23 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    flexGrow: 1,
+    flex: 1,
+    cursor: "pointer",
   },
+  offset: theme.mixins.toolbar,
 }));
 
 export default function AppBar() {
   const classes = useStyles();
+  const history = useHistory();
+
+  const handleClick = () => {
+    history.push("/");
+  };
 
   return (
     <div className={classes.root}>
-      <Bar position="static">
+      <Bar position="fixed" color="primary">
         <Toolbar>
           {/* <IconButton
             edge="start"
@@ -34,12 +42,17 @@ export default function AppBar() {
           >
             <MenuIcon />
           </IconButton> */}
-          <Typography variant="h1" className={classes.title}>
+          <Typography
+            variant="h1"
+            className={classes.title}
+            onClick={() => handleClick()}
+          >
             知識+ D-App
           </Typography>
           <Button color="inherit">UserId</Button>
         </Toolbar>
       </Bar>
+      <div className={classes.offset} />
     </div>
   );
 }

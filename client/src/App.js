@@ -5,7 +5,9 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
 import store from "./store";
+import AppBar from "./components/appBar";
 import Main from "./features/main";
+import PostPage from "./features/post/postPage";
 
 import "./App.css";
 
@@ -35,10 +37,10 @@ const theme = createMuiTheme({
   },
   palette: {
     type: "light",
-    // primary: {
-    // main: "#3282b8",
-    // dark: "#3282b8",
-    // },
+    primary: {
+      main: "#006AC7",
+      // dark: "#3282b8",
+    },
     // secondary: {
     //   // light: "#63a4ff",
     //   main: "#bbe1fa",
@@ -58,7 +60,11 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <BrowserRouter>
+          <AppBar />
           <Switch>
+            <Route path="/post/:postid">
+              <PostPage />
+            </Route>
             <Route path="/">
               <Main />
             </Route>

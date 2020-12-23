@@ -1,7 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import AppBar from "../../components/appBar";
 
 import PostList from "../post/postList";
 import Ranking from "../user/ranking";
@@ -30,7 +29,6 @@ const Main = () => {
   const classes = useStyles();
   return (
     <div>
-      <AppBar />
       <Container className={classes.root}>
         <div className={classes.postList}>
           <PostList />
