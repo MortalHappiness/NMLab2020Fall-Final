@@ -60,8 +60,16 @@ const Ranking = () => {
                 <Typography style={{ margin: 8 }} variant="h3" color="initial">
                   <strong>{`${idx + 1}`}</strong>
                 </Typography>
-                <div style={{ flexGrow: 1 }}>{id.substring(0, 10)}...</div>
-                {token}
+                <Typography
+                  color="textSecondary"
+                  style={{ flexGrow: 1 }}
+                  noWrap
+                >
+                  {id}...
+                </Typography>
+                <Typography variant="body1" color="textSecondary">
+                  {token}
+                </Typography>
               </div>
             </ListItem>
             <Divider />

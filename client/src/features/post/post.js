@@ -41,8 +41,10 @@ const Post = ({ title, text, author, tags, time, tokens }) => {
         //     <MoreVertIcon />
         //   </IconButton>
         // }
-        title={author}
         subheader={displayTime}
+        title={author}
+        titleTypographyProps={{ noWrap: true }}
+        subheaderTypographyProps={{ noWrap: true }}
       />
       {/* <Avatar>
           <FolderIcon />

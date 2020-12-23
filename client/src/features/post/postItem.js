@@ -35,7 +35,7 @@ const PostItem = ({ title, text, author, tags, time, id, tokens }) => {
             </strong>{" "}
           </Typography>
           <Typography variant="body1">{text}</Typography>
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant="body2" color="textSecondary" noWrap>
             creator: {author}
           </Typography>
           <Typography variant="body2" color="textSecondary">

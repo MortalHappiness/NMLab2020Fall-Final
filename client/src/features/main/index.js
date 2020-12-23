@@ -28,7 +28,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   ranking: {
-    flexBasis: "220px",
+    flexBasis: "180px",
+    maxWidth: "240px",
     [theme.breakpoints.down("sm")]: {
       display: "none",
     },

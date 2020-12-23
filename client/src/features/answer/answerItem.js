@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     display: "block",
     border: "none",
+    [theme.breakpoints.down("sm")]: {
+      padding: theme.spacing(1),
+    },
   },
   avatar: {
     backgroundColor: "gray",
@@ -34,6 +37,12 @@ const useStyles = makeStyles((theme) => ({
   },
   thumbUpIcon: {
     fontSize: theme.spacing(6),
+    [theme.breakpoints.down("sm")]: {
+      fontSize: theme.spacing(4),
+    },
+  },
+  cardHeader: {
+    padding: theme.spacing(1),
   },
 }));
 
@@ -63,6 +72,7 @@ const AnswerItem = ({ text, author, time, votes, id }) => {
         </div>
         <div>
           <CardHeader
+            className={classes.cardHeader}
             avatar={
               <Avatar aria-label="recipe" className={classes.avatar}>
                 A
@@ -77,7 +87,7 @@ const AnswerItem = ({ text, author, time, votes, id }) => {
             subheader={displayTime}
           />
           <CardContent>
-            <Typography variant="h2">{text}</Typography>
+            <Typography variant="body1">{text}</Typography>
           </CardContent>
         </div>
       </div>

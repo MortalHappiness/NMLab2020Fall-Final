@@ -44,7 +44,7 @@ const PostPage = () => {
     }
   }, [post]);
   return (
-    <Container className={classes.root}>
+    <Container maxWidth="xl" className={classes.root}>
       {post ? (
         <div className={classes.content}>
           <Post {...post} />
