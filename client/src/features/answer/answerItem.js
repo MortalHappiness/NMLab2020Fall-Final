@@ -8,12 +8,11 @@ import IconButton from "@material-ui/core/IconButton";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import Button from "@material-ui/core/Button";
-import * as dayjs from "dayjs";
 import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 import CardHeader from "@material-ui/core/CardHeader";
 
-const relativeTime = require("dayjs/plugin/relativeTime");
+import { timeFromNow } from "../../utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,8 +41,7 @@ const AnswerItem = ({ text, author, time, votes, id }) => {
   const classes = useStyles();
   const [voteCnt, setVoteCnt] = useState(votes.length);
 
-  dayjs.extend(relativeTime);
-  const displayTime = dayjs(time).fromNow();
+  const displayTime = timeFromNow(time);
   const handleClickThumb = () => {
     setVoteCnt(voteCnt + 1);
   };

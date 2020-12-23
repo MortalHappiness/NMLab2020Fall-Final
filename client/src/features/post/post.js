@@ -1,16 +1,14 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
+// import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 import CardHeader from "@material-ui/core/CardHeader";
-import * as dayjs from "dayjs";
-
-const relativeTime = require("dayjs/plugin/relativeTime");
+import { timeFromNow } from "../../utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,10 +25,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Post = ({ title, text, author, tags, time }) => {
+const Post = ({ title, text, author, tags, time, tokens }) => {
   const classes = useStyles();
-  dayjs.extend(relativeTime);
-  const displayTime = dayjs(time).fromNow();
+  const displayTime = timeFromNow(time);
   return (
     <Card className={classes.root} variant="outlined">
       <CardHeader
@@ -52,7 +49,9 @@ const Post = ({ title, text, author, tags, time }) => {
         </Avatar> */}
       <CardContent>
         <Typography variant="h1">
-          <strong>{title}</strong>{" "}
+          <strong>
+            {title} [{tokens} cbs]
+          </strong>
         </Typography>
         <Typography variant="body1">{text}</Typography>
       </CardContent>

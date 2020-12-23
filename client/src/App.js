@@ -42,10 +42,10 @@ const theme = createMuiTheme({
       // dark: "#3282b8",
     },
     // secondary: {
-    //   // light: "#63a4ff",
-    //   main: "#bbe1fa",
-    //   // dark: "#bbe1fa",
-    //   // contrastText: "#fff",
+    // light: "#63a4ff",
+    // main: "#bbe1fa",
+    // dark: "#bbe1fa",
+    // contrastText: "#fff",
     // },
     // background: {
     //   paper: "#292929",

@@ -9,7 +9,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import { selectPost, setPostList } from "./postSlice";
 import { selectAnswer, setAnswerList } from "../answer/answerSlice";
 
-import Post from "../../components/post";
+import Post from "./post";
 import AnswerList from "../answer/answerList";
 
 const useStyles = makeStyles((theme) => ({
