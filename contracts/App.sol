@@ -32,6 +32,7 @@ contract App {
     string[] tags;
     uint256 tokens;
     uint256 timestamp;
+    bool isExpired;
   }
 
   struct PostView {
@@ -41,6 +42,7 @@ contract App {
     string[] tags;
     uint256 tokens;
     uint256 timestamp;
+    bool isExpired;
   }
 
   struct Answer {
@@ -65,6 +67,8 @@ contract App {
     uint256 id;
     address userAddress;
     uint256 tokens;
+    uint256 totalUpVotes;
+    uint256 totalDownVotes;
     uint256[] postIds;
     uint256[] issuedAnswerIds;
     uint256[] upVotedAnswerIds;
@@ -75,6 +79,8 @@ contract App {
     uint256 id;
     address userAddress;
     uint256 tokens;
+    uint256 totalUpVotes;
+    uint256 totalDownVotes;
     uint256[] postIds;
     uint256[] issuedAnswerIds;
     uint256[] upVotedAnswerIds;
@@ -110,6 +116,7 @@ contract App {
     postView.tags = post.tags;
     postView.tokens = post.tokens;
     postView.timestamp = post.timestamp;
+    postView.isExpired = post.isExpired;
 
     return postView;
   }
@@ -134,6 +141,8 @@ contract App {
     userView.id = user.id;
     userView.userAddress = user.userAddress;
     userView.tokens = user.tokens;
+    userView.totalUpVotes = user.totalUpVotes;
+    userView.totalDownVotes = user.totalDownVotes;
     userView.postIds = user.postIds;
     userView.issuedAnswerIds = user.issuedAnswerIds;
     userView.upVotedAnswerIds = user.upVotedAnswerIds;
@@ -256,6 +265,8 @@ contract App {
     answer.votesMap[msg.sender] = true;
     answer.upVotes = answer.upVotes.add(1);
     user.upVotedAnswerIds.push(answerId);
+    User storage author = _users[_userIds[answer.author]];
+    author.totalUpVotes = author.totalUpVotes.add(1);
   }
 
   function increaseDownVotes(uint256 answerId) external {
@@ -268,6 +279,8 @@ contract App {
     answer.votesMap[msg.sender] = true;
     answer.downVotes = answer.downVotes.add(1);
     user.downVotedAnswerIds.push(answerId);
+    User storage author = _users[_userIds[answer.author]];
+    author.totalDownVotes = author.totalDownVotes.add(1);
   }
 
   function createAccount() external payable {
