@@ -57,6 +57,7 @@ contract("App", (accounts) => {
     const answers = await instance.getAnswers(0);
     const account = await instance.getAccountInfo();
     assert.equal(account.upVotedAnswerIds[0], "0");
+    assert.equal(account.totalUpVotes, "1");
     assert.equal(answers[0].upVotes, 1);
   });
   it("test increaseUpVotes, second time", async () => {
