@@ -288,7 +288,7 @@ contract App {
            "You have no account yet");
     uint256 money = token.mul(TOKEN_VALUE);
     require(user.tokens >= token,
-           "You don't have so many tokens");
+           "You don't have enough tokens");
     user.tokens = user.tokens.sub(token);
     msg.sender.transfer(money);
   }

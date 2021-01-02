@@ -1,37 +1,52 @@
+const truffleAssert = require("truffle-assertions");
 const App = artifacts.require("./App.sol");
+const BN = web3.utils.BN;
 
 contract("App", (accounts) => {
-  it("test addPost and getPosts", async () => {
+  it("test getAccountInfo before createAccount", async () => {
     const instance = await App.deployed();
 
-    await instance.addPost("title", "content", 100, ["a"]);
-    const posts = await instance.getPosts();
-
-    assert.equal(posts.length, 1, "posts.length must be 1");
-    assert.equal(posts[0].author, accounts[0], "posts.author is wrong");
-    assert.equal(posts[0].title, "title", "posts.title is wrong");
-    assert.equal(posts[0].content, "content", "posts.content is wrong");
-    assert.equal(posts[0].tags[0], "a", "posts.tags is wrong");
-    assert.equal(posts[0].tokens, 100, "posts.tokens is wrong");
+    truffleAssert.reverts(instance.getAccountInfo(), "You have no account yet");
   });
-  //it("test addAnswer and getAnswers", async () => {
-  //  const instance = await App.deployed();
+  it("test createAccount with no value", async () => {
+    const instance = await App.deployed();
 
-  //  await instance.addAnswer(0, "ans0");
-  //  const answers = await instance.getAnswers(0);
-
-  //  assert.equal(answers.length, 1, "answers.length must be 1");
-  //  assert.equal(answers[0].text, "ans0", "text must be 'ans0'");
-  //  assert.equal(answers[0].upVotes, 0, "upVotes must be 0");
-  //  assert.equal(answers[0].downVotes, 0, "downVotes must be 0");
-  //});
-  //it("test increaseUpVotes", async () => {
-  //  const instance = await App.deployed();
-
-  //  await instance.increaseUpVotes(0, 0);
-  //  const answers = await instance.getAnswers(0);
-
-  //  assert.equal(answers.length, 1, "answers.length must be 1");
-  //  assert.equal(answers[0].upVotes, 1, "upVotes must be 1");
-  //});
+    truffleAssert.reverts(
+      instance.createAccount(),
+      "The ether you paid is not equal to ACCOUNT_CREATE_EHTER_FEE"
+    );
+  });
+  it("test getAccountInfo after createAccount", async () => {
+    const instance = await App.deployed();
+    const ACCOUNT_CREATE_EHTER_FEE = await instance.getAccountCreateEtherFee();
+    const INIT_TOKENS = await instance.getInitTokens();
+    await instance.createAccount({ value: ACCOUNT_CREATE_EHTER_FEE });
+    const account = await instance.getAccountInfo();
+    assert.equal(account.id, "1");
+    assert.equal(account.userAddress, accounts[0]);
+    assert.equal(account.tokens, INIT_TOKENS);
+  });
+  it("test ether2token", async () => {
+    const instance = await App.deployed();
+    const TOKEN_VALUE = await instance.getTokenValue();
+    let account = await instance.getAccountInfo();
+    const { tokens } = account;
+    const value = web3.utils.toWei("1");
+    await instance.ether2token({ value });
+    account = await instance.getAccountInfo();
+    const newTokens = new BN(tokens).add(
+      new BN(value).div(new BN(TOKEN_VALUE))
+    );
+    assert.equal(account.tokens, newTokens.toString());
+  });
+  it("test token2ether", async () => {
+    const instance = await App.deployed();
+    const TOKEN_VALUE = await instance.getTokenValue();
+    let account = await instance.getAccountInfo();
+    const { tokens } = account;
+    await instance.token2ether(100);
+    account = await instance.getAccountInfo();
+    const newTokens = new BN(tokens).sub(new BN(100));
+    assert.equal(account.tokens, newTokens.toString());
+  });
 });
