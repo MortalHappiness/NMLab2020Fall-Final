@@ -178,6 +178,8 @@ contract App {
     require(user.userAddress == msg.sender, "You have no account yet");
     require(user.tokens >= tokens, "You don't have enough tokens");
     user.tokens = user.tokens.sub(tokens);
+    uint256 postId = _posts.length;
+    user.postIds.push(postId);
     Post storage post = _posts.push();
     post.author = msg.sender;
     post.title = title;
@@ -208,7 +210,11 @@ contract App {
 
   function addAnswer(uint256 postId, string memory content) external {
     require(postId < _posts.length, "Invalid postId");
-    _posts[postId].answerIds.push(_answers.length);
+    User storage user = _users[_userIds[msg.sender]];
+    require(user.userAddress == msg.sender, "You have no account yet");
+    uint256 answerId = _answers.length;
+    user.issuedAnswerIds.push(answerId);
+    _posts[postId].answerIds.push(answerId);
     Answer storage answer = _answers.push();
     answer.author = msg.sender;
     answer.content = content;
@@ -242,20 +248,26 @@ contract App {
 
   function increaseUpVotes(uint256 answerId) external {
     require(answerId < _answers.length, "Invalid answerId");
+    User storage user = _users[_userIds[msg.sender]];
+    require(user.userAddress == msg.sender, "You have no account yet");
     Answer storage answer = _answers[answerId];
     require(answer.votesMap[msg.sender] == false,
            "You have already voted this answer");
     answer.votesMap[msg.sender] = true;
     answer.upVotes = answer.upVotes.add(1);
+    user.upVotedAnswerIds.push(answerId);
   }
 
   function increaseDownVotes(uint256 answerId) external {
     require(answerId < _answers.length, "Invalid answerId");
+    User storage user = _users[_userIds[msg.sender]];
+    require(user.userAddress == msg.sender, "You have no account yet");
     Answer storage answer = _answers[answerId];
     require(answer.votesMap[msg.sender] == false,
            "You have already voted this answer");
     answer.votesMap[msg.sender] = true;
     answer.downVotes = answer.downVotes.add(1);
+    user.downVotedAnswerIds.push(answerId);
   }
 
   function createAccount() external payable {

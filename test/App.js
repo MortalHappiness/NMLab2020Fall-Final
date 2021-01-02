@@ -36,6 +36,7 @@ contract("App", (accounts) => {
     const newTokens = new BN(tokens).sub(new BN(MIN_POST_CREATE_TOKEN_FEE));
     const posts = await instance.getPosts();
     assert.equal(account.tokens, newTokens.toString());
+    assert.equal(account.postIds[0], "0");
     assert.equal(posts[0].author, accounts[0]);
     assert.equal(posts[0].title, "title");
     assert.equal(posts[0].content, "content");
@@ -45,6 +46,8 @@ contract("App", (accounts) => {
     const instance = await App.deployed();
     await instance.addAnswer(0, "answer");
     const answers = await instance.getAnswers(0);
+    const account = await instance.getAccountInfo();
+    assert.equal(account.issuedAnswerIds[0], "0");
     assert.equal(answers[0].author, accounts[0]);
     assert.equal(answers[0].content, "answer");
   });
@@ -52,6 +55,8 @@ contract("App", (accounts) => {
     const instance = await App.deployed();
     await instance.increaseUpVotes(0);
     const answers = await instance.getAnswers(0);
+    const account = await instance.getAccountInfo();
+    assert.equal(account.upVotedAnswerIds[0], "0");
     assert.equal(answers[0].upVotes, 1);
   });
   it("test increaseUpVotes, second time", async () => {
