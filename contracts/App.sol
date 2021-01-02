@@ -10,13 +10,19 @@ contract App {
   // ========================================
   // Constants
 
-  uint256 constant MIN_POST_CREATE_FEE = 20;
+  uint256 constant ACCOUNT_CREATE_EHTER_FEE = 0.001 ether;
+  uint256 constant TOKEN_VALUE = 0.000001 ether;
+  uint256 constant INIT_TOKENS = 500;
+  uint256 constant MIN_POST_CREATE_TOKEN_FEE = 100;
+
+  // ========================================
+  // Events
 
   // ========================================
   // Struct definitions
 
   // A "View" is a representation of the original struct that hides the
-  // implementation details and can be safely passed to frontend
+  // implementation details and can be cleanly passed to frontend
 
   struct Post {
     address author;
@@ -56,6 +62,18 @@ contract App {
   }
 
   struct User {
+    uint256 id;
+    address userAddress;
+    uint256 tokens;
+    uint256[] postIds;
+    uint256[] issuedAnswerIds;
+    uint256[] upVotedAnswerIds;
+    uint256[] downVotedAnswerIds;
+  }
+
+  struct UserView {
+    uint256 id;
+    address userAddress;
     uint256 tokens;
     uint256[] postIds;
     uint256[] issuedAnswerIds;
@@ -72,10 +90,18 @@ contract App {
   mapping (address => uint256) private _userIds;
 
   // ========================================
+  // Constructor
+
+  constructor() public {
+    // Add a null user
+    _users.push();
+  }
+
+  // ========================================
   // View conversion functions
 
-  function toPostView(Post memory post
-                     ) internal pure returns (PostView memory) {
+  function _toPostView(Post memory post
+                      ) internal pure returns (PostView memory) {
     PostView memory postView;
 
     postView.author = post.author;
@@ -88,8 +114,8 @@ contract App {
     return postView;
   }
 
-  function toAnswerView(Answer memory answer
-                       ) internal pure returns (AnswerView memory) {
+  function _toAnswerView(Answer memory answer
+                        ) internal pure returns (AnswerView memory) {
     AnswerView memory answerView;
 
     answerView.author = answer.author;
@@ -101,14 +127,53 @@ contract App {
     return answerView;
   }
 
+  function _toUserView(User memory user
+                      ) internal pure returns (UserView memory) {
+    UserView memory userView;
+
+    userView.id = user.id;
+    userView.userAddress = user.userAddress;
+    userView.tokens = user.tokens;
+    userView.postIds = user.postIds;
+    userView.issuedAnswerIds = user.issuedAnswerIds;
+    userView.upVotedAnswerIds = user.upVotedAnswerIds;
+    userView.downVotedAnswerIds = user.downVotedAnswerIds;
+
+    return userView;
+  }
+
   // ========================================
+  // Modifiers
+
+  // ========================================
+  // Constant getter functions
+
+  function getAccountCreateEtherFee() external pure returns (uint256) {
+    return ACCOUNT_CREATE_EHTER_FEE;
+  }
+
+  function getTokenValue() external pure returns (uint256) {
+    return TOKEN_VALUE;
+  }
+
+  function getInitTokens() external pure returns (uint256) {
+    return INIT_TOKENS;
+  }
+
+  function getMinPostCreateTokenFee() external pure returns (uint256) {
+    return MIN_POST_CREATE_TOKEN_FEE;
+  }
+
+  // ========================================
+  // External functions
 
   function addPost(string memory title,
                    string memory content,
                    uint256 tokens,
                    string[] memory tags
                   ) external {
-    require(tokens >= MIN_POST_CREATE_FEE);
+    require(tokens >= MIN_POST_CREATE_TOKEN_FEE,
+           "Tokens must be greater than MIN_POST_CREATE_TOKEN_FEE");
     Post storage post = _posts.push();
     post.author = msg.sender;
     post.title = title;
@@ -121,7 +186,7 @@ contract App {
   function getPosts() external view returns (PostView[] memory) {
     PostView[] memory postViews = new PostView[](_posts.length);
     for (uint256 i = 0; i < _posts.length; ++i) {
-      postViews[i] = toPostView(_posts[i]);
+      postViews[i] = _toPostView(_posts[i]);
     }
     return postViews;
   }
@@ -132,7 +197,7 @@ contract App {
     for (uint256 i = 0; i < postIds.length; ++i) {
       uint256 postId = postIds[i];
       require(postId < _posts.length);
-      postViews[i] = toPostView(_posts[postId]);
+      postViews[i] = _toPostView(_posts[postId]);
     }
     return postViews;
   }
@@ -155,7 +220,7 @@ contract App {
     for (uint256 i = 0; i < answerIds.length; ++i) {
       uint256 answerId = answerIds[i];
       require(answerId < _answers.length);
-      answerViews[i] = toAnswerView(_answers[answerId]);
+      answerViews[i] = _toAnswerView(_answers[answerId]);
     }
     return answerViews;
   }
@@ -166,7 +231,7 @@ contract App {
     for (uint256 i = 0; i < answerIds.length; ++i) {
       uint256 answerId = answerIds[i];
       require(answerId < _answers.length);
-      answerViews[i] = toAnswerView(_answers[answerId]);
+      answerViews[i] = _toAnswerView(_answers[answerId]);
     }
     return answerViews;
   }
@@ -185,5 +250,46 @@ contract App {
     require(answer.votesMap[msg.sender] == false);
     answer.votesMap[msg.sender] = true;
     answer.downVotes = answer.downVotes.add(1);
+  }
+
+  function createAccount() external payable {
+    require(msg.value == ACCOUNT_CREATE_EHTER_FEE,
+           "The ether you paid is not equal to ACCOUNT_CREATE_EHTER_FEE");
+    require(_users[_userIds[msg.sender]].userAddress == address(0),
+           "You have already have an account");
+    uint256 userId = _users.length;
+    User storage user = _users.push();
+    user.id = userId;
+    user.userAddress = msg.sender;
+    user.tokens = INIT_TOKENS;
+    _userIds[msg.sender] = userId;
+  }
+
+  function getAccountInfo() external view returns (UserView memory) {
+    User memory user = _users[_userIds[msg.sender]];
+    require(user.userAddress == msg.sender,
+           "You have no account yet");
+    return _toUserView(user);
+  }
+
+  function ether2token() external payable {
+    require(msg.value >= TOKEN_VALUE,
+           "The ether you paid is less than TOKEN_VALUE");
+    User storage user = _users[_userIds[msg.sender]];
+    require(user.userAddress == msg.sender,
+           "You have no account yet");
+    uint token = msg.value.div(TOKEN_VALUE);
+    user.tokens = user.tokens.add(token);
+  }
+
+  function token2ether(uint256 token) external {
+    User storage user = _users[_userIds[msg.sender]];
+    require(user.userAddress == msg.sender,
+           "You have no account yet");
+    uint256 money = token.mul(TOKEN_VALUE);
+    require(user.tokens >= token,
+           "You don't have so many tokens");
+    user.tokens = user.tokens.sub(token);
+    msg.sender.transfer(money);
   }
 }
