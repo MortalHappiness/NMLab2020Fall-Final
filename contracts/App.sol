@@ -174,6 +174,10 @@ contract App {
                   ) external {
     require(tokens >= MIN_POST_CREATE_TOKEN_FEE,
            "Tokens must be greater than MIN_POST_CREATE_TOKEN_FEE");
+    User storage user = _users[_userIds[msg.sender]];
+    require(user.userAddress == msg.sender, "You have no account yet");
+    require(user.tokens >= tokens, "You don't have enough tokens");
+    user.tokens = user.tokens.sub(tokens);
     Post storage post = _posts.push();
     post.author = msg.sender;
     post.title = title;
@@ -196,14 +200,14 @@ contract App {
     PostView[] memory postViews = new PostView[](postIds.length);
     for (uint256 i = 0; i < postIds.length; ++i) {
       uint256 postId = postIds[i];
-      require(postId < _posts.length);
+      require(postId < _posts.length, "Invalid postId");
       postViews[i] = _toPostView(_posts[postId]);
     }
     return postViews;
   }
 
   function addAnswer(uint256 postId, string memory content) external {
-    require(postId < _posts.length);
+    require(postId < _posts.length, "Invalid postId");
     _posts[postId].answerIds.push(_answers.length);
     Answer storage answer = _answers.push();
     answer.author = msg.sender;
@@ -214,12 +218,12 @@ contract App {
 
   function getAnswers(uint256 postId
                      ) external view returns (AnswerView[] memory) {
-    require(postId < _posts.length);
+    require(postId < _posts.length, "Invalid postId");
     uint256[] memory answerIds = _posts[postId].answerIds;
     AnswerView[] memory answerViews = new AnswerView[](answerIds.length);
     for (uint256 i = 0; i < answerIds.length; ++i) {
       uint256 answerId = answerIds[i];
-      require(answerId < _answers.length);
+      require(answerId < _answers.length, "Invalid answerId");
       answerViews[i] = _toAnswerView(_answers[answerId]);
     }
     return answerViews;
@@ -230,24 +234,26 @@ contract App {
     AnswerView[] memory answerViews = new AnswerView[](answerIds.length);
     for (uint256 i = 0; i < answerIds.length; ++i) {
       uint256 answerId = answerIds[i];
-      require(answerId < _answers.length);
+      require(answerId < _answers.length, "Invalid answerId");
       answerViews[i] = _toAnswerView(_answers[answerId]);
     }
     return answerViews;
   }
 
   function increaseUpVotes(uint256 answerId) external {
-    require(answerId < _answers.length);
+    require(answerId < _answers.length, "Invalid answerId");
     Answer storage answer = _answers[answerId];
-    require(answer.votesMap[msg.sender] == false);
+    require(answer.votesMap[msg.sender] == false,
+           "You have already voted this answer");
     answer.votesMap[msg.sender] = true;
     answer.upVotes = answer.upVotes.add(1);
   }
 
   function increaseDownVotes(uint256 answerId) external {
-    require(answerId < _answers.length);
+    require(answerId < _answers.length, "Invalid answerId");
     Answer storage answer = _answers[answerId];
-    require(answer.votesMap[msg.sender] == false);
+    require(answer.votesMap[msg.sender] == false,
+           "You have already voted this answer");
     answer.votesMap[msg.sender] = true;
     answer.downVotes = answer.downVotes.add(1);
   }
@@ -282,14 +288,14 @@ contract App {
     user.tokens = user.tokens.add(token);
   }
 
-  function token2ether(uint256 token) external {
+  function token2ether(uint256 tokens) external {
     User storage user = _users[_userIds[msg.sender]];
     require(user.userAddress == msg.sender,
            "You have no account yet");
-    uint256 money = token.mul(TOKEN_VALUE);
-    require(user.tokens >= token,
+    require(user.tokens >= tokens,
            "You don't have enough tokens");
-    user.tokens = user.tokens.sub(token);
+    uint256 money = tokens.mul(TOKEN_VALUE);
+    user.tokens = user.tokens.sub(tokens);
     msg.sender.transfer(money);
   }
 }

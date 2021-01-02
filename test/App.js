@@ -26,6 +26,41 @@ contract("App", (accounts) => {
     assert.equal(account.userAddress, accounts[0]);
     assert.equal(account.tokens, INIT_TOKENS);
   });
+  it("test addPost", async () => {
+    const instance = await App.deployed();
+    const MIN_POST_CREATE_TOKEN_FEE = await instance.getMinPostCreateTokenFee();
+    let account = await instance.getAccountInfo();
+    const { tokens } = account;
+    await instance.addPost("title", "content", MIN_POST_CREATE_TOKEN_FEE, []);
+    account = await instance.getAccountInfo();
+    const newTokens = new BN(tokens).sub(new BN(MIN_POST_CREATE_TOKEN_FEE));
+    const posts = await instance.getPosts();
+    assert.equal(account.tokens, newTokens.toString());
+    assert.equal(posts[0].author, accounts[0]);
+    assert.equal(posts[0].title, "title");
+    assert.equal(posts[0].content, "content");
+    assert.equal(posts[0].tokens, MIN_POST_CREATE_TOKEN_FEE);
+  });
+  it("test addAnswer", async () => {
+    const instance = await App.deployed();
+    await instance.addAnswer(0, "answer");
+    const answers = await instance.getAnswers(0);
+    assert.equal(answers[0].author, accounts[0]);
+    assert.equal(answers[0].content, "answer");
+  });
+  it("test increaseUpVotes, first time", async () => {
+    const instance = await App.deployed();
+    await instance.increaseUpVotes(0);
+    const answers = await instance.getAnswers(0);
+    assert.equal(answers[0].upVotes, 1);
+  });
+  it("test increaseUpVotes, second time", async () => {
+    const instance = await App.deployed();
+    truffleAssert.reverts(
+      instance.increaseUpVotes(0),
+      "You have already voted this answer"
+    );
+  });
   it("test ether2token", async () => {
     const instance = await App.deployed();
     const TOKEN_VALUE = await instance.getTokenValue();
@@ -44,9 +79,8 @@ contract("App", (accounts) => {
     const TOKEN_VALUE = await instance.getTokenValue();
     let account = await instance.getAccountInfo();
     const { tokens } = account;
-    await instance.token2ether(100);
+    await instance.token2ether(tokens);
     account = await instance.getAccountInfo();
-    const newTokens = new BN(tokens).sub(new BN(100));
-    assert.equal(account.tokens, newTokens.toString());
+    assert.equal(account.tokens, "0");
   });
 });
