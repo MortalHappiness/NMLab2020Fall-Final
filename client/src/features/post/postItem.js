@@ -21,9 +21,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PostItem = ({ title, text, author, tags, time, id, tokens }) => {
+const PostItem = ({ title, content, author, tags, timestamp, id, tokens }) => {
   const classes = useStyles();
-  const displayTime = timeFromNow(time);
+  const displayTime = timeFromNow(timestamp);
   return (
     <Card className={classes.root} variant="outlined">
       <CardActionArea component={Link} to={`/post/${id}`}>
@@ -34,7 +34,7 @@ const PostItem = ({ title, text, author, tags, time, id, tokens }) => {
               {title} [{tokens} csb]
             </strong>{" "}
           </Typography>
-          <Typography variant="body1">{text}</Typography>
+          <Typography variant="body1">{content}</Typography>
           <Typography variant="body2" color="textSecondary" noWrap>
             creator: {author}
           </Typography>
@@ -50,6 +50,7 @@ const PostItem = ({ title, text, author, tags, time, id, tokens }) => {
               color="primary"
               size="small"
               label={tag}
+              key={tag}
             />
           ))}
         </CardActions>

@@ -6,10 +6,10 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 
 import Toolbar from "@material-ui/core/Toolbar";
-import { selectPost, setPostList } from "./postSlice";
+import { selectPost, setPostList } from "../post/postSlice";
 import { selectAnswer, setAnswerList } from "../answer/answerSlice";
 
-import Post from "./post";
+import Post from "../post/post";
 import AnswerList from "../answer/answerList";
 
 const useStyles = makeStyles((theme) => ({
@@ -30,19 +30,9 @@ const PostPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { postid } = useParams();
-  const { init, postList } = useSelector(selectPost);
-  const { answerList } = useSelector(selectAnswer);
+  const { postList } = useSelector(selectPost);
   const post = postList[postid] ? postList[postid] : null;
-  useEffect(() => {
-    if (!init) {
-      dispatch(setPostList());
-    }
-  }, []);
-  useEffect(() => {
-    if (post) {
-      dispatch(setAnswerList(post.answers));
-    }
-  }, [post]);
+  // Todo: Initialization (fetch post, get user info)
   return (
     <Container maxWidth="xl" className={classes.root}>
       {post ? (

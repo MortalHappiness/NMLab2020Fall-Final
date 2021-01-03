@@ -46,6 +46,7 @@ const TagList = () => {
           className={classes.tag}
           variant="body2"
           color="textSecondary"
+          key={tag}
         >
           {tag}
         </Typography>

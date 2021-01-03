@@ -46,11 +46,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AnswerItem = ({ text, author, time, votes, id }) => {
+const AnswerItem = ({ content, author, timestamp, downVotes, upVotes }) => {
   const classes = useStyles();
-  const [voteCnt, setVoteCnt] = useState(votes.length);
+  const [voteCnt, setVoteCnt] = useState(parseInt(upVotes)); // votes type are string!
 
-  const displayTime = timeFromNow(time);
+  const displayTime = timeFromNow(timestamp);
   const handleClickThumb = () => {
     setVoteCnt(voteCnt + 1);
   };
@@ -87,7 +87,7 @@ const AnswerItem = ({ text, author, time, votes, id }) => {
             subheader={displayTime}
           />
           <CardContent>
-            <Typography variant="body1">{text}</Typography>
+            <Typography variant="body1">{content}</Typography>
           </CardContent>
         </div>
       </div>

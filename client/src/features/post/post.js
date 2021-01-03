@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 // import CardActionArea from "@material-ui/core/CardActionArea";
@@ -9,6 +9,8 @@ import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 import CardHeader from "@material-ui/core/CardHeader";
 import { timeFromNow } from "../../utils";
+
+import { Web3Context } from "../../Web3";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,9 +27,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Post = ({ title, text, author, tags, time, tokens }) => {
+const Post = ({ title, content, author, tags, id, timestamp, tokens }) => {
   const classes = useStyles();
-  const displayTime = timeFromNow(time);
+  const displayTime = timeFromNow(timestamp);
+  const { accounts, contract } = useContext(Web3Context);
+
+  // Add Answer
+  const handleAddAnswer = async () => {
+    try {
+      const content = "Hi, This is my answer heyyayay";
+      console.log(id);
+      const res = await contract.methods
+        .addAnswer(id, content)
+        .send({ from: accounts[0], gas: 1000000 });
+      console.log(res);
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <Card className={classes.root} variant="outlined">
       <CardHeader
@@ -36,26 +53,18 @@ const Post = ({ title, text, author, tags, time, tokens }) => {
             A
           </Avatar>
         }
-        // action={
-        //   <IconButton aria-label="settings">
-        //     <MoreVertIcon />
-        //   </IconButton>
-        // }
         subheader={displayTime}
         title={author}
         titleTypographyProps={{ noWrap: true }}
         subheaderTypographyProps={{ noWrap: true }}
       />
-      {/* <Avatar>
-          <FolderIcon />
-        </Avatar> */}
       <CardContent>
         <Typography variant="h1">
           <strong>
             {title} [{tokens} csb]
           </strong>
         </Typography>
-        <Typography variant="body1">{text}</Typography>
+        <Typography variant="body1">{content}</Typography>
       </CardContent>
       <CardActions>
         <Button
@@ -63,6 +72,7 @@ const Post = ({ title, text, author, tags, time, tokens }) => {
           size="medium"
           color="secondary"
           variant="contained"
+          onClick={handleAddAnswer}
         >
           + Answer
         </Button>

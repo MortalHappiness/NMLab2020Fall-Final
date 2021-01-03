@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
@@ -6,8 +6,10 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 
 import store from "./store";
 import AppBar from "./components/appBar";
-import Main from "./features/main";
-import PostPage from "./features/post/postPage";
+import Main from "./features/pages/mainPage";
+import PostPage from "./features/pages/postPage";
+
+import Web3Provider from "./Web3";
 
 import "./App.css";
 
@@ -39,38 +41,35 @@ const theme = createMuiTheme({
     type: "light",
     primary: {
       main: "#006AC7",
-      // dark: "#3282b8",
     },
-    // secondary: {
-    // light: "#63a4ff",
-    // main: "#bbe1fa",
-    // dark: "#bbe1fa",
-    // contrastText: "#fff",
-    // },
-    // background: {
-    //   paper: "#292929",
-    //   default: "#121212",
-    // },
   },
 });
+
+function MyRoute() {
+  return (
+    <BrowserRouter>
+      <AppBar />
+      <Switch>
+        <Route path="/post/:postid">
+          <PostPage />
+        </Route>
+        <Route path="/">
+          <Main />
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  );
+}
 
 function App() {
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <BrowserRouter>
-          <AppBar />
-          <Switch>
-            <Route path="/post/:postid">
-              <PostPage />
-            </Route>
-            <Route path="/">
-              <Main />
-            </Route>
-          </Switch>
-        </BrowserRouter>
-      </ThemeProvider>
+      <Web3Provider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <MyRoute />
+        </ThemeProvider>
+      </Web3Provider>
     </Provider>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 import Bar from "@material-ui/core/AppBar";
@@ -9,6 +9,8 @@ import Button from "@material-ui/core/Button";
 // import MenuIcon from "@material-ui/icons/Menu";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 import Slide from "@material-ui/core/Slide";
+
+import { Web3Context } from "../Web3";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,9 +38,26 @@ function HideOnScroll({ children }) {
 export default function AppBar() {
   const classes = useStyles();
   const history = useHistory();
-
+  const { web3, accounts, contract } = useContext(Web3Context);
   const handleClick = () => {
     history.push("/");
+  };
+  const handleSignUp = async () => {
+    try {
+      const accountCreateEtherFee = await contract.methods
+        .getAccountCreateEtherFee()
+        .call();
+      const balance = await web3.eth.getBalance(accounts[0]);
+      console.log("balance", balance);
+      const res = await contract.methods.createAccount().send({
+        from: accounts[0],
+        value: accountCreateEtherFee,
+        gas: 1000000,
+      });
+      console.log(res);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -61,7 +80,9 @@ export default function AppBar() {
             >
               知識+ D-App
             </Typography>
-            <Button color="inherit">UserId</Button>
+            <Button color="inherit" onClick={handleSignUp}>
+              SignUp
+            </Button>
           </Toolbar>
         </Bar>
       </HideOnScroll>

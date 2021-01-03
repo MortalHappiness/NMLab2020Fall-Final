@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-// import Grid from "@material-ui/core/Grid";
 
 import PostList from "../post/postList";
 import TagList from "../tagList";
@@ -39,19 +38,17 @@ const useStyles = makeStyles((theme) => ({
 const Main = () => {
   const classes = useStyles();
   return (
-    <div>
-      <Container className={classes.root}>
-        <div className={classes.tagList}>
-          <TagList />
-        </div>
-        <div className={classes.postList}>
-          <PostList />
-        </div>
-        <div className={classes.ranking}>
-          <Ranking />
-        </div>
-      </Container>
-    </div>
+    <Container className={classes.root}>
+      <div className={classes.tagList}>
+        <TagList />
+      </div>
+      <div className={classes.postList}>
+        <PostList />
+      </div>
+      <div className={classes.ranking}>
+        <Ranking />
+      </div>
+    </Container>
   );
 };
 

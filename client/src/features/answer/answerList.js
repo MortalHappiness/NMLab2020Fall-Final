@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -9,6 +9,7 @@ import Divider from "@material-ui/core/Divider";
 
 import AnswerItem from "./answerItem";
 import { selectAnswer, setAnswerList } from "./answerSlice";
+import { Web3Context } from "../../Web3";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,17 +25,20 @@ const useStyles = makeStyles((theme) => ({
 const AnswerList = ({ post }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { contract } = useContext(Web3Context);
   const { answerList } = useSelector(selectAnswer);
-  useEffect(() => {
+  useEffect(async () => {
     if (post) {
-      dispatch(setAnswerList(post.answers));
+      const fetchAnswerList = await contract.methods.getAnswers(post.id).call();
+      console.log("FetchAnswerList", fetchAnswerList);
+      dispatch(setAnswerList(fetchAnswerList));
     }
   }, [post]);
   return (
     <div>
       <Toolbar>
         <Typography variant="h2" color="initial">
-          {post.answers.length} answers
+          {answerList.length} answers
         </Typography>
       </Toolbar>
       <List className={classes.answerList}>

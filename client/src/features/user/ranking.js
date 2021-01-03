@@ -54,7 +54,7 @@ const Ranking = () => {
       <Typography variant="h2">Ranking</Typography>
       <List>
         {rankingList.map(({ id, token }, idx) => (
-          <div>
+          <div key={idx}>
             <ListItem style={{ paddingRight: 0, paddingLeft: 0 }}>
               <div className={classes.ranking}>
                 <Typography style={{ margin: 8 }} variant="h3" color="initial">
