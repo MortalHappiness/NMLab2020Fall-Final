@@ -47,8 +47,6 @@ export default function AppBar() {
       const accountCreateEtherFee = await contract.methods
         .getAccountCreateEtherFee()
         .call();
-      const balance = await web3.eth.getBalance(accounts[0]);
-      console.log("balance", balance);
       const res = await contract.methods.createAccount().send({
         from: accounts[0],
         value: accountCreateEtherFee,
