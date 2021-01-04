@@ -39,7 +39,6 @@ contract App {
     address author;
     string title;
     string content;
-    uint256[] answerIds;
     string[] tags;
     uint256 tokens;
     uint256 timestamp;
@@ -47,6 +46,7 @@ contract App {
   }
 
   struct Answer {
+    uint256 id;
     address author;
     string content;
     mapping (address => bool) votesMap;
@@ -57,6 +57,7 @@ contract App {
   }
 
   struct AnswerView {
+    uint256 id;
     address author;
     string content;
     uint256 upVotes;
@@ -114,7 +115,6 @@ contract App {
     postView.author = post.author;
     postView.title = post.title;
     postView.content = post.content;
-    postView.answerIds = post.answerIds;
     postView.tags = post.tags;
     postView.tokens = post.tokens;
     postView.timestamp = post.timestamp;
@@ -127,6 +127,7 @@ contract App {
                         ) internal pure returns (AnswerView memory) {
     AnswerView memory answerView;
 
+    answerView.id = answer.id;
     answerView.author = answer.author;
     answerView.content = answer.content;
     answerView.upVotes = answer.upVotes;
@@ -303,6 +304,14 @@ contract App {
     require(user.userAddress == msg.sender,
            "You have no account yet");
     return _toUserView(user);
+  }
+
+  function getUsers() external view returns (UserView[] memory) {
+    UserView[] memory userViews = new UserView[](_users.length);
+    for (uint256 i = 0; i < _users.length; ++i) {
+      userViews[i] = _toUserView(_users[i]);
+    }
+    return userViews;
   }
 
   function ether2token() external payable {
