@@ -39,6 +39,7 @@ contract App {
     address author;
     string title;
     string content;
+    uint256[] answerIds;
     string[] tags;
     uint256 tokens;
     uint256 timestamp;
@@ -113,6 +114,7 @@ contract App {
     postView.author = post.author;
     postView.title = post.title;
     postView.content = post.content;
+    postView.answerIds = post.answerIds;
     postView.tags = post.tags;
     postView.tokens = post.tokens;
     postView.timestamp = post.timestamp;
