@@ -228,6 +228,7 @@ contract App {
     user.issuedAnswerIds.push(answerId);
     _posts[postId].answerIds.push(answerId);
     Answer storage answer = _answers.push();
+    answer.id = answerId;
     answer.author = msg.sender;
     answer.content = content;
     answer.timestamp = now;
