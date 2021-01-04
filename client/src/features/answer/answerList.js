@@ -9,7 +9,7 @@ import Divider from "@material-ui/core/Divider";
 
 import AnswerItem from "./answerItem";
 import { selectAnswer, setAnswerList } from "./answerSlice";
-import { Web3Context } from "../../Web3";
+import { ContractContext } from "../../contractContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,12 +25,12 @@ const useStyles = makeStyles((theme) => ({
 const AnswerList = ({ post }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { contract } = useContext(Web3Context);
+  const contractAPI = useContext(ContractContext);
   const { answerList } = useSelector(selectAnswer);
   useEffect(async () => {
     if (post) {
-      const fetchAnswerList = await contract.methods.getAnswers(post.id).call();
-      console.log("FetchAnswerList", fetchAnswerList);
+      const fetchAnswerList = await contractAPI.getAnswers(post.id);
+      console.log(fetchAnswerList);
       dispatch(setAnswerList(fetchAnswerList));
     }
   }, [post]);
@@ -42,8 +42,8 @@ const AnswerList = ({ post }) => {
         </Typography>
       </Toolbar>
       <List className={classes.answerList}>
-        {answerList.map((answer) => (
-          <div>
+        {answerList.map((answer, idx) => (
+          <div key={idx}>
             <AnswerItem {...answer} />
             <Divider />
           </div>

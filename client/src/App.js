@@ -10,7 +10,7 @@ import Main from "./features/pages/mainPage";
 import PostPage from "./features/pages/postPage";
 
 import Web3Provider from "./Web3";
-import ContractProvider from "./contractApi";
+import ContractProvider from "./contractContext";
 
 import "./App.css";
 
@@ -66,12 +66,12 @@ function App() {
   return (
     <Provider store={store}>
       <ContractProvider>
-        <Web3Provider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <MyRoute />
-          </ThemeProvider>
-        </Web3Provider>
+        {/* <Web3Provider> */}
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <MyRoute />
+        </ThemeProvider>
+        {/* </Web3Provider> */}
       </ContractProvider>
     </Provider>
   );

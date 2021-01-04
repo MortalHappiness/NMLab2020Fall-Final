@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ListItem from "@material-ui/core/ListItem";
 import Card from "@material-ui/core/Card";
@@ -13,6 +13,8 @@ import Avatar from "@material-ui/core/Avatar";
 import CardHeader from "@material-ui/core/CardHeader";
 
 import { timeFromNow } from "../../utils";
+
+import ContractContext from "../../contractContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,15 +50,17 @@ const useStyles = makeStyles((theme) => ({
 
 const AnswerItem = ({ content, author, timestamp, downVotes, upVotes }) => {
   const classes = useStyles();
+  const contractAPI = useContext(ContractContext);
   const [voteCnt, setVoteCnt] = useState(parseInt(upVotes)); // votes type are string!
 
   const displayTime = timeFromNow(timestamp);
-  const handleClickThumb = () => {
+  const handleClickThumb = async () => {
+    // const res = await contractAPI.increaseUpVotes();
+    // console.log(res);
     setVoteCnt(voteCnt + 1);
   };
   return (
     <ListItem className={classes.root} component={Card} variant="outlined">
-      {/* <h1>This is answer Item</h1> */}
       <div className={classes.content}>
         <div className={classes.thumbUp}>
           <IconButton

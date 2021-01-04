@@ -12,13 +12,10 @@ class ContractAPI {
     this.gas = 1000000;
 
     // constant
-    this.ACCOUNT_CREATE_EHTER_FEE = null;
+    this.ACCOUNT_CREATE_ETHER_FEE = null;
     this.TOKEN_VALUE = null;
     this.INIT_TOKENS = null;
     this.MIN_POST_CREATE_TOKEN_FEE = null;
-
-    this.init();
-    this.initConstant();
   }
 
   // initialize function
@@ -32,15 +29,16 @@ class ContractAPI {
       this.deployedNetwork && this.deployedNetwork.address
     );
     console.log(this.web3, this.accounts, this.networkId, this.contract);
+    this.initConstant();
   }
 
   async initConstant() {
-    this.ACCOUNT_CREATE_EHTER_FEE = await this.getAccountCreateEtherFee();
+    this.ACCOUNT_CREATE_ETHER_FEE = await this.getAccountCreateEtherFee();
     this.TOKEN_VALUE = await this.getTokenValue();
     this.INIT_TOKENS = await this.getInitTokens();
     this.MIN_POST_CREATE_TOKEN_FEE = await this.getMinPostCreateTokenFee();
     console.log(
-      this.ACCOUNT_CREATE_EHTER_FEE,
+      this.ACCOUNT_CREATE_ETHER_FEE,
       this.TOKEN_VALUE,
       this.INIT_TOKENS,
       this.MIN_POST_CREATE_TOKEN_FEE
@@ -109,15 +107,18 @@ class ContractAPI {
   }
 
   createAccount() {
+    console.log(this.ACCOUNT_CREATE_ETHER_FEE);
     return this.contract.methods.createAccount().send({
       from: this.accounts[0],
-      value: this.AccountCreateEtherFee,
+      value: this.ACCOUNT_CREATE_ETHER_FEE,
       gas: this.gas,
     });
   }
 
   getAccountInfo() {
-    return this.contract.methods.getAccountInfo().call();
+    return this.contract.methods.getAccountInfo().call({
+      from: this.accounts[0],
+    });
   }
 
   ether2token() {

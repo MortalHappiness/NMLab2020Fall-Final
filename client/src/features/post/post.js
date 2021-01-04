@@ -10,7 +10,7 @@ import Avatar from "@material-ui/core/Avatar";
 import CardHeader from "@material-ui/core/CardHeader";
 import { timeFromNow } from "../../utils";
 
-import { Web3Context } from "../../Web3";
+import { ContractContext } from "../../contractContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,16 +30,14 @@ const useStyles = makeStyles((theme) => ({
 const Post = ({ title, content, author, tags, id, timestamp, tokens }) => {
   const classes = useStyles();
   const displayTime = timeFromNow(timestamp);
-  const { accounts, contract } = useContext(Web3Context);
+  const contractAPI = useContext(ContractContext);
 
   // Add Answer
   const handleAddAnswer = async () => {
     try {
       const content = "Hi, This is my answer heyyayay";
       console.log(id);
-      const res = await contract.methods
-        .addAnswer(id, content)
-        .send({ from: accounts[0], gas: 1000000 });
+      const res = await contractAPI.addAnswer(id, content);
       console.log(res);
     } catch (err) {
       console.error(err);

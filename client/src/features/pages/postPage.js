@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState, useEffect, useContext } from "react";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 
 import Toolbar from "@material-ui/core/Toolbar";
-import { selectPost, setPostList } from "../post/postSlice";
-import { selectAnswer, setAnswerList } from "../answer/answerSlice";
 
 import Post from "../post/post";
 import AnswerList from "../answer/answerList";
+
+// import { selectPost, setPostList } from "../post/postSlice";
+import { ContractContext } from "../../contractContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,11 +29,25 @@ const useStyles = makeStyles((theme) => ({
 
 const PostPage = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
+  const contractAPI = useContext(ContractContext);
   const { postid } = useParams();
-  const { postList } = useSelector(selectPost);
-  const post = postList[postid] ? postList[postid] : null;
+
+  const [post, setPost] = useState(null);
+
   // Todo: Initialization (fetch post, get user info)
+  // Initialize Post
+  useEffect(async () => {
+    if (contractAPI) {
+      try {
+        const res = await contractAPI.getPostsByIds([postid]);
+        console.log(res);
+        setPost({ ...res[0], id: postid });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }, [contractAPI]);
+
   return (
     <Container maxWidth="xl" className={classes.root}>
       {post ? (

@@ -1,10 +1,14 @@
-import React, { useContext } from "react";
+import React, { useEffect, useContext } from "react";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
 import PostList from "../post/postList";
 import TagList from "../tagList";
-import Ranking from "../user/ranking";
+import Ranking from "../../components/ranking";
+import { setPostList } from "../post/postSlice";
+
+import { ContractContext } from "../../contractContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,6 +41,17 @@ const useStyles = makeStyles((theme) => ({
 
 const Main = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const contractAPI = useContext(ContractContext);
+
+  // Initialize Post List
+  useEffect(async () => {
+    if (contractAPI) {
+      const fetchPostList = await contractAPI.getPosts();
+      dispatch(setPostList(fetchPostList));
+    }
+  }, [contractAPI]);
+
   return (
     <Container className={classes.root}>
       <div className={classes.tagList}>

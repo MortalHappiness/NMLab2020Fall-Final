@@ -3,22 +3,15 @@ import { useSelector, useDispatch } from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { selectPost, setPostList } from "./postSlice";
-import { Web3Context } from "../../Web3";
+// import { Web3Context } from "../../Web3";
+import { ContractContext } from "../../contractContext";
 
 import PostItem from "./postItem";
 
 const PostList = () => {
   // Initialize
-  const { init, postList } = useSelector(selectPost);
-  const { accounts, contract } = useContext(Web3Context);
-  const dispatch = useDispatch();
-  useEffect(async () => {
-    if (contract) {
-      const fetchPostList = await contract.methods.getPosts().call();
-      console.log(fetchPostList);
-      dispatch(setPostList(fetchPostList));
-    }
-  }, [contract]);
+  const { postList } = useSelector(selectPost);
+  const contractAPI = useContext(ContractContext);
 
   // Ask Queston
   const handleAddPost = async () => {
@@ -27,9 +20,7 @@ const PostList = () => {
       const content = "Hello 2021 may be good!";
       const tokens = 120;
       const tags = ["travel", "programming"];
-      const res = await contract.methods
-        .addPost(title, content, tokens, tags)
-        .send({ from: accounts[0], gas: 1000000 });
+      const res = contractAPI.addPost(title, content, tokens, tags);
       console.log(res);
     } catch (err) {
       console.error(err);

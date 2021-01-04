@@ -6,22 +6,15 @@ const ContractContext = createContext(null);
 export { ContractContext };
 
 export default ({ children }) => {
-  const [contractApi, setContractApi] = useState(null);
+  const [contractAPI, setContractAPI] = useState(null);
 
-  useEffect(() => {
-    try {
-      const api = new ContractAPI();
-      setContractApi(api);
-    } catch (error) {
-      alert(
-        `Failed to load web3, accounts, or contract. Check console for details.`
-      );
-      console.error(error);
-    }
+  useEffect(async () => {
+    const api = new ContractAPI();
+    await api.init();
+    setContractAPI(api);
   }, []);
-
   return (
-    <ContractContext.Provider value={contractApi}>
+    <ContractContext.Provider value={contractAPI}>
       {children}
     </ContractContext.Provider>
   );
