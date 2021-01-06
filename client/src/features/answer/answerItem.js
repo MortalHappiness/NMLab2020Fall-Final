@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ListItem from "@material-ui/core/ListItem";
 import Card from "@material-ui/core/Card";
@@ -12,9 +12,12 @@ import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 import CardHeader from "@material-ui/core/CardHeader";
 
+import { EditorState, convertFromRaw } from 'draft-js';
+
 import { timeFromNow } from "../../utils";
 
 import ContractContext from "../../contractContext";
+import RichTextDisplayer from "../utils/textDisplayer";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,12 +56,25 @@ const AnswerItem = ({ content, author, timestamp, downVotes, upVotes }) => {
   const contractAPI = useContext(ContractContext);
   const [voteCnt, setVoteCnt] = useState(parseInt(upVotes)); // votes type are string!
 
+  const [displayerState, setDisplayerState] = useState(
+    () => EditorState.createEmpty(),
+  )
+
   const displayTime = timeFromNow(timestamp);
   const handleClickThumb = async () => {
     // const res = await contractAPI.increaseUpVotes();
     // console.log(res);
     setVoteCnt(voteCnt + 1);
   };
+
+  useEffect(() => {
+    if (content) {
+      setDisplayerState(
+        EditorState.createWithContent(convertFromRaw(JSON.parse(content)))
+      );
+    }
+  }, [content])
+
   return (
     <ListItem className={classes.root} component={Card} variant="outlined">
       <div className={classes.content}>
@@ -91,7 +107,7 @@ const AnswerItem = ({ content, author, timestamp, downVotes, upVotes }) => {
             subheader={displayTime}
           />
           <CardContent>
-            <Typography variant="body1">{content}</Typography>
+            <RichTextDisplayer displayerState={displayerState} />
           </CardContent>
         </div>
       </div>

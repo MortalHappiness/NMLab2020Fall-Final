@@ -1,0 +1,26 @@
+const tagList = [
+  "health",
+  "Business and Finance",
+  "Entertainment",
+  "Home",
+  "Family",
+  "Pets",
+  "Children",
+  "Government",
+  "Education",
+  "News",
+  "Travel",
+  "Vehicle",
+  "Electronic Product",
+  "Environment",
+  "Society",
+  "Science",
+  "Beauty",
+  "Art",
+  "Game",
+  "Sports",
+  "Computer",
+  "Food",
+];
+
+export default tagList;

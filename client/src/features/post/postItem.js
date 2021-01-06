@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -8,6 +8,9 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import { timeFromNow } from "../../utils";
+
+import { EditorState, convertFromRaw } from 'draft-js';
+import RichTextDisplayer from "../utils/textDisplayer";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,17 +27,30 @@ const useStyles = makeStyles((theme) => ({
 const PostItem = ({ title, content, author, tags, timestamp, id, tokens }) => {
   const classes = useStyles();
   const displayTime = timeFromNow(timestamp);
+
+  const [displayerState, setDisplayerState] = useState(
+    () => EditorState.createEmpty(),
+  )
+
+  useEffect(() => {
+    if (content) {
+      setDisplayerState(
+        EditorState.createWithContent(convertFromRaw(JSON.parse(content)))
+      );
+    }
+  }, [content])
+
   return (
     <Card className={classes.root} variant="outlined">
       <CardActionArea component={Link} to={`/post/${id}`}>
         <CardContent>
-          <Typography variant="h2">
+          <Typography variant="h1">
             {" "}
             <strong>
               {title} [{tokens} csb]
             </strong>{" "}
           </Typography>
-          <Typography variant="body1">{content}</Typography>
+          <RichTextDisplayer displayerState={displayerState} />
           <Typography variant="body2" color="textSecondary" noWrap>
             creator: {author}
           </Typography>

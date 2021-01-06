@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 // import CardActionArea from "@material-ui/core/CardActionArea";
@@ -9,6 +9,9 @@ import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 import CardHeader from "@material-ui/core/CardHeader";
 import { timeFromNow } from "../../utils";
+
+import { EditorState, convertFromRaw } from 'draft-js';
+import RichTextDisplayer from "../utils/textDisplayer";
 
 import { ContractContext } from "../../contractContext";
 
@@ -27,22 +30,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Post = ({ title, content, author, tags, id, timestamp, tokens }) => {
+const Post = ({ title, content, author, tags, id, timestamp, tokens, setAddAnswerDialogOpen }) => {
   const classes = useStyles();
   const displayTime = timeFromNow(timestamp);
   const contractAPI = useContext(ContractContext);
+  const [displayerState, setDisplayerState] = useState(
+    () => EditorState.createEmpty(),
+  )
 
-  // Add Answer
-  const handleAddAnswer = async () => {
-    try {
-      const content = "Hi, This is my answer heyyayay";
-      console.log(id);
-      const res = await contractAPI.addAnswer(id, content);
-      console.log(res);
-    } catch (err) {
-      console.error(err);
+  useEffect(() => {
+    if (content) {
+      setDisplayerState(
+        EditorState.createWithContent(convertFromRaw(JSON.parse(content)))
+      );
     }
-  };
+  }, [content])
+
   return (
     <Card className={classes.root} variant="outlined">
       <CardHeader
@@ -62,7 +65,7 @@ const Post = ({ title, content, author, tags, id, timestamp, tokens }) => {
             {title} [{tokens} csb]
           </strong>
         </Typography>
-        <Typography variant="body1">{content}</Typography>
+        <RichTextDisplayer displayerState={displayerState} />
       </CardContent>
       <CardActions>
         <Button
@@ -70,7 +73,7 @@ const Post = ({ title, content, author, tags, id, timestamp, tokens }) => {
           size="medium"
           color="secondary"
           variant="contained"
-          onClick={handleAddAnswer}
+          onClick={() => setAddAnswerDialogOpen(true)}
         >
           + Answer
         </Button>
