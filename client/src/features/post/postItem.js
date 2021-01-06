@@ -6,6 +6,7 @@ import Chip from "@material-ui/core/Chip";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
 import { Link } from "react-router-dom";
 import { timeFromNow } from "../../utils";
 
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     marginLeft: theme.spacing(0.5),
     marginRight: theme.spacing(0.5),
+    marginBottom: theme.spacing(0.5)
   },
 }));
 
@@ -58,17 +60,19 @@ const PostItem = ({ title, content, author, tags, timestamp, id, tokens }) => {
             {displayTime}
           </Typography>
         </CardContent>
-        <CardActions disableSpacing>
-          {tags.map((tag) => (
-            <Chip
-              className={classes.chip}
-              variant="outlined"
-              color="primary"
-              size="small"
-              label={tag}
-              key={tag}
-            />
-          ))}
+        <CardActions disableSpacing style={{}}>
+          <Box>
+            {tags.map((tag) => (
+              <Chip
+                className={classes.chip}
+                variant="outlined"
+                color="primary"
+                size="small"
+                label={tag}
+                key={tag}
+              />
+            ))}
+          </Box>
         </CardActions>
       </CardActionArea>
     </Card>

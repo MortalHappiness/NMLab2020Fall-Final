@@ -1,5 +1,5 @@
 const tagList = [
-  "health",
+  "Health",
   "Business and Finance",
   "Entertainment",
   "Home",

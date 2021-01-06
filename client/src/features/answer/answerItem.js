@@ -90,7 +90,7 @@ const AnswerItem = ({ content, author, timestamp, downVotes, upVotes }) => {
             {voteCnt}
           </Typography>
         </div>
-        <div>
+        <div style={{ width: '100%' }}>
           <CardHeader
             className={classes.cardHeader}
             avatar={

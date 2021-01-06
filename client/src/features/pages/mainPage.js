@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
   postList: {
     flexBasis: "800px",
+    maxWidth: '60%',
     marginRight: theme.spacing(1),
     marginLeft: theme.spacing(1),
     [theme.breakpoints.down("sm")]: {
@@ -43,6 +44,7 @@ const Main = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const contractAPI = useContext(ContractContext);
+  const [postFilter, setPostFilter] = useState(null)
 
   // Initialize Post List
   useEffect(async () => {
@@ -55,10 +57,10 @@ const Main = () => {
   return (
     <Container className={classes.root}>
       <div className={classes.tagList}>
-        <TagList />
+        <TagList setPostFilter={setPostFilter} />
       </div>
       <div className={classes.postList}>
-        <PostList />
+        <PostList postFilter={postFilter} />
       </div>
       <div className={classes.ranking}>
         <Ranking />

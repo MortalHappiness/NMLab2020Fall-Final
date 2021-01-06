@@ -16,10 +16,11 @@ import { ContractContext } from "../../contractContext";
 import PostItem from "./postItem";
 import AddPostModal from "./addPostModal"
 
-const PostList = () => {
+const PostList = (props) => {
   // Initialize
   const { postList } = useSelector(selectPost);
   const contractAPI = useContext(ContractContext);
+  const { postFilter } = props;
 
   const [newPost, setNewPost] = useState({
     title: '',
@@ -86,7 +87,12 @@ const PostList = () => {
           Ask Questions
         </Button>
       </div>
-      {postList.map((post, idx) => (
+      {postList.filter(post => {
+        if (!postFilter) return true
+        else {
+          return post.tags.some(tag => tag === postFilter)
+        }
+      }).map((post, idx) => (
         <PostItem {...post} key={idx} />
       ))}
       <AddPostModal

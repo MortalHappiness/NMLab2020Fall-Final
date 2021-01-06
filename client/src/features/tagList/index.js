@@ -36,12 +36,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TagList = () => {
+const TagList = (props) => {
   const classes = useStyles();
+  const { setPostFilter } = props;
   return (
     <div>
       <Typography variant="h2" color="initial">
         Catagories
+      </Typography>
+      <Typography
+        className={classes.tag}
+        variant="body2"
+        color="textSecondary"
+        key='All'
+        onClick={() => setPostFilter(null)}
+      >
+        All
       </Typography>
       {tagList.map((tag) => (
         <Typography
@@ -49,6 +59,7 @@ const TagList = () => {
           variant="body2"
           color="textSecondary"
           key={tag}
+          onClick={() => setPostFilter(tag)}
         >
           {tag}
         </Typography>
