@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/nmlab2020fall-final/static/css/main.2434c218.chunk.css",
-    "main.js": "/nmlab2020fall-final/static/js/main.f17ac2f4.chunk.js",
-    "main.js.map": "/nmlab2020fall-final/static/js/main.f17ac2f4.chunk.js.map",
-    "runtime-main.js": "/nmlab2020fall-final/static/js/runtime-main.e21422cb.js",
-    "runtime-main.js.map": "/nmlab2020fall-final/static/js/runtime-main.e21422cb.js.map",
-    "static/css/2.e3cf4cf6.chunk.css": "/nmlab2020fall-final/static/css/2.e3cf4cf6.chunk.css",
-    "static/js/2.967bb248.chunk.js": "/nmlab2020fall-final/static/js/2.967bb248.chunk.js",
-    "static/js/2.967bb248.chunk.js.map": "/nmlab2020fall-final/static/js/2.967bb248.chunk.js.map",
-    "index.html": "/nmlab2020fall-final/index.html",
-    "precache-manifest.05d917f62e27bf7650e8a37e56f514f1.js": "/nmlab2020fall-final/precache-manifest.05d917f62e27bf7650e8a37e56f514f1.js",
-    "service-worker.js": "/nmlab2020fall-final/service-worker.js",
-    "static/css/2.e3cf4cf6.chunk.css.map": "/nmlab2020fall-final/static/css/2.e3cf4cf6.chunk.css.map",
-    "static/css/main.2434c218.chunk.css.map": "/nmlab2020fall-final/static/css/main.2434c218.chunk.css.map",
-    "static/js/2.967bb248.chunk.js.LICENSE.txt": "/nmlab2020fall-final/static/js/2.967bb248.chunk.js.LICENSE.txt"
+    "main.css": "/NMLab2020Fall-Final/static/css/main.2434c218.chunk.css",
+    "main.js": "/NMLab2020Fall-Final/static/js/main.c7e711dd.chunk.js",
+    "main.js.map": "/NMLab2020Fall-Final/static/js/main.c7e711dd.chunk.js.map",
+    "runtime-main.js": "/NMLab2020Fall-Final/static/js/runtime-main.a87a6d53.js",
+    "runtime-main.js.map": "/NMLab2020Fall-Final/static/js/runtime-main.a87a6d53.js.map",
+    "static/css/2.e3cf4cf6.chunk.css": "/NMLab2020Fall-Final/static/css/2.e3cf4cf6.chunk.css",
+    "static/js/2.ada03d8d.chunk.js": "/NMLab2020Fall-Final/static/js/2.ada03d8d.chunk.js",
+    "static/js/2.ada03d8d.chunk.js.map": "/NMLab2020Fall-Final/static/js/2.ada03d8d.chunk.js.map",
+    "index.html": "/NMLab2020Fall-Final/index.html",
+    "precache-manifest.0daece128f1f03eaa539cce15d40d902.js": "/NMLab2020Fall-Final/precache-manifest.0daece128f1f03eaa539cce15d40d902.js",
+    "service-worker.js": "/NMLab2020Fall-Final/service-worker.js",
+    "static/css/2.e3cf4cf6.chunk.css.map": "/NMLab2020Fall-Final/static/css/2.e3cf4cf6.chunk.css.map",
+    "static/css/main.2434c218.chunk.css.map": "/NMLab2020Fall-Final/static/css/main.2434c218.chunk.css.map",
+    "static/js/2.ada03d8d.chunk.js.LICENSE.txt": "/NMLab2020Fall-Final/static/js/2.ada03d8d.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.e21422cb.js",
+    "static/js/runtime-main.a87a6d53.js",
     "static/css/2.e3cf4cf6.chunk.css",
-    "static/js/2.967bb248.chunk.js",
+    "static/js/2.ada03d8d.chunk.js",
     "static/css/main.2434c218.chunk.css",
-    "static/js/main.f17ac2f4.chunk.js"
+    "static/js/main.c7e711dd.chunk.js"
   ]
 }
