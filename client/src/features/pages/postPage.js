@@ -56,7 +56,7 @@ const PostPage = () => {
           post.id,
           JSON.stringify(content)
         );
-        console.log(addRes);
+        // console.log(addRes);
         setEditorState(EditorState.createEmpty());
         setSnackbarProp({
           open: true,

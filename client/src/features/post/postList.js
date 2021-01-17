@@ -3,39 +3,39 @@ import { useSelector, useDispatch } from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw } from "draft-js";
 
 import { selectPost, setPostList } from "./postSlice";
 // import { Web3Context } from "../../Web3";
 import { ContractContext } from "../../contractContext";
 
-
 import PostItem from "./postItem";
-import AddPostModal from "./addPostModal"
+import AddPostModal from "./addPostModal";
 
 const PostList = (props) => {
   // Initialize
+  const dispatch = useDispatch();
   const { postList } = useSelector(selectPost);
   const contractAPI = useContext(ContractContext);
   const { postFilter } = props;
 
   const [newPost, setNewPost] = useState({
-    title: '',
+    title: "",
     tokens: 0,
     tags: [],
-    confirmed: false
+    confirmed: false,
   });
   const [addPostDialogOpen, setAddPostDialogOpen] = useState(false);
-  const [editorState, setEditorState] = useState(
-    () => EditorState.createEmpty(),
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty()
   );
   const [snackbarProp, setSnackbarProp] = useState({
     open: false,
-    message: '',
-    status: 'null'
+    message: "",
+    status: "null",
   });
 
   // Ask Queston
@@ -45,24 +45,32 @@ const PostList = (props) => {
       content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
       tokens: newPost.tokens,
       tags: newPost.tags,
-    }
-    console.log('new post payload', payload)
+    };
+    // console.log('new post payload', payload)
     try {
-      const res = contractAPI.addPost(payload.title, payload.content, payload.tokens, payload.tags);
-      console.log(res);
+      await contractAPI.addPost(
+        payload.title,
+        payload.content,
+        payload.tokens,
+        payload.tags
+      );
+      // console.log(res);
       setSnackbarProp({
         open: true,
         message: `New question added!`,
-        status: 'success'
-      })
+        status: "success",
+      });
+      // Refetch post
+      const fetchPostList = await contractAPI.getPosts();
+      dispatch(setPostList(fetchPostList));
     } catch (err) {
       console.error(err);
     }
   };
 
   useEffect(() => {
-    if (newPost && newPost.confirmed) handleAddPost()
-  }, [newPost])
+    if (newPost && newPost.confirmed) handleAddPost();
+  }, [newPost]);
 
   // useEffect(async () => {
   //   if (contractAPI) {
@@ -87,14 +95,15 @@ const PostList = (props) => {
           Ask Questions
         </Button>
       </div>
-      {postList.filter(post => {
-        if (!postFilter) return true
-        else {
-          return post.tags.some(tag => tag === postFilter)
-        }
-      }).map((post, idx) => (
-        <PostItem {...post} key={idx} />
-      ))}
+      {postList
+        .filter((post) => {
+          if (!postFilter) return true;
+
+          return post.tags.some((tag) => tag === postFilter);
+        })
+        .map((post, idx) => (
+          <PostItem {...post} key={idx} />
+        ))}
       <AddPostModal
         addPostDialogOpen={addPostDialogOpen}
         setAddPostDialogOpen={setAddPostDialogOpen}
@@ -105,10 +114,9 @@ const PostList = (props) => {
       <Snackbar
         open={snackbarProp.open}
         autoHideDuration={2000}
-        onClose={() => setSnackbarProp({ ...snackbarProp, open: false })}>
-        <Alert severity={snackbarProp.status}>
-          {snackbarProp.message}
-        </Alert>
+        onClose={() => setSnackbarProp({ ...snackbarProp, open: false })}
+      >
+        <Alert severity={snackbarProp.status}>{snackbarProp.message}</Alert>
       </Snackbar>
     </div>
   );

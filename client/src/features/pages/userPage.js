@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     marginTop: theme.spacing(2),
-    justifyContent: "center",
+    // justifyContent: "center",
   },
   content: {
     width: "80%",
