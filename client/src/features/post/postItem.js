@@ -8,9 +8,9 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { Link } from "react-router-dom";
+import { EditorState, convertFromRaw } from "draft-js";
 import { timeFromNow } from "../../utils";
 
-import { EditorState, convertFromRaw } from 'draft-js';
 import RichTextDisplayer from "../utils/textDisplayer";
 
 const useStyles = makeStyles((theme) => ({
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     marginLeft: theme.spacing(0.5),
     marginRight: theme.spacing(0.5),
-    marginBottom: theme.spacing(0.5)
+    marginBottom: theme.spacing(0.5),
   },
 }));
 
@@ -30,9 +30,9 @@ const PostItem = ({ title, content, author, tags, timestamp, id, tokens }) => {
   const classes = useStyles();
   const displayTime = timeFromNow(timestamp);
 
-  const [displayerState, setDisplayerState] = useState(
-    () => EditorState.createEmpty(),
-  )
+  const [displayerState, setDisplayerState] = useState(() =>
+    EditorState.createEmpty()
+  );
 
   useEffect(() => {
     if (content) {
@@ -40,7 +40,7 @@ const PostItem = ({ title, content, author, tags, timestamp, id, tokens }) => {
         EditorState.createWithContent(convertFromRaw(JSON.parse(content)))
       );
     }
-  }, [content])
+  }, [content]);
 
   return (
     <Card className={classes.root} variant="outlined">
@@ -60,7 +60,7 @@ const PostItem = ({ title, content, author, tags, timestamp, id, tokens }) => {
             {displayTime}
           </Typography>
         </CardContent>
-        <CardActions disableSpacing style={{}}>
+        <CardActions disableSpacing>
           <Box>
             {tags.map((tag) => (
               <Chip

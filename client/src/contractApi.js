@@ -29,7 +29,7 @@ class ContractAPI {
       AppContract.abi,
       this.deployedNetwork && this.deployedNetwork.address
     );
-    console.log(this.web3, this.accounts, this.networkId, this.contract);
+    // console.log(this.web3, this.accounts, this.networkId, this.contract);
     this.initConstant();
   }
 
@@ -136,11 +136,21 @@ class ContractAPI {
   }
 
   token2ether(tokens) {
-    return this.contract.methods.token2ether(tokens).call();
+    return this.contract.methods.token2ether(tokens).send({
+      from: this.accounts[0],
+      gas: this.gas,
+    });
   }
 
   getUsers() {
     return this.contract.methods.getUsers().call();
+  }
+
+  requestForExpire(postId) {
+    return this.contract.methods.requestForExpire(postId).send({
+      from: this.accounts[0],
+      gas: this.gas,
+    });
   }
 }
 

@@ -30,7 +30,7 @@ const AnswerList = ({ post }) => {
   useEffect(async () => {
     if (post) {
       const fetchAnswerList = await contractAPI.getAnswers(post.id);
-      console.log(fetchAnswerList);
+      // console.log(fetchAnswerList);
       dispatch(setAnswerList(fetchAnswerList));
     }
   }, [post]);

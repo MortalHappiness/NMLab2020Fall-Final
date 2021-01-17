@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams, Link } from "react-router-dom";
+import { useHistory, useParams, Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
-import Snackbar from "@material-ui/core/Snackbar";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -16,6 +15,8 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 
 import AnswerItem from "../answer/answerItem";
 
@@ -23,9 +24,9 @@ import { ContractContext } from "../../contractContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    // display: "flex",
+    display: "flex",
     marginTop: theme.spacing(2),
-    // justifyContent: "center",
+    justifyContent: "center",
   },
   content: {
     width: "80%",
@@ -36,10 +37,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const UserPage = () => {
+  const history = useHistory();
   const classes = useStyles();
   const contractAPI = useContext(ContractContext);
 
   // Initial
+  const { userid } = useParams();
+
   const [tokens, setTokens] = useState(0);
   const [postIds, setPostIds] = useState([]);
   const [issuedAnswerIds, setIssuedAnswerIds] = useState([]);
@@ -50,6 +54,11 @@ const UserPage = () => {
 
   const [posts, setPosts] = useState([]);
   const [answers, setAnswers] = useState([]);
+  const [snackbarProp, setSnackbarProp] = useState({
+    open: false,
+    message: "",
+    status: "null",
+  });
 
   // Token2Ether
   const [token2ether, setToken2ether] = useState(0);
@@ -62,10 +71,22 @@ const UserPage = () => {
   };
   const handleToken2Ether = async () => {
     try {
-      const res = await contractAPI.token2ether(parseInt(token2ether));
-      console.log(res);
+      handleClose();
+      if (token2ether > tokens) throw "Tokens not enough !";
+      await contractAPI.token2ether(parseInt(token2ether));
+      init();
+      setSnackbarProp({
+        open: true,
+        message: "token to ether success",
+        status: "success",
+      });
     } catch (err) {
       console.error(err);
+      setSnackbarProp({
+        open: true,
+        message: err,
+        status: "error",
+      });
     }
   };
   // ether2token
@@ -80,15 +101,29 @@ const UserPage = () => {
   };
   const handleEther2Token = async () => {
     try {
-      const res = await contractAPI.ether2token(parseInt(ether));
+      handleCloseEther();
+      await contractAPI.ether2token(parseInt(ether));
       init();
+      setSnackbarProp({
+        open: true,
+        message: "token to ether success",
+        status: "success",
+      });
     } catch (err) {
       console.error(err);
+      setSnackbarProp({
+        open: true,
+        message: err,
+        status: "error",
+      });
     }
   };
 
   const init = async () => {
     if (contractAPI) {
+      if (contractAPI.accounts[0] !== userid) {
+        history.push(`/user/${contractAPI.accounts[0]}`);
+      }
       const accountInfo = await contractAPI.getAccountInfo();
       setTokens(parseInt(accountInfo.tokens));
       setPostIds(accountInfo.postIds);
@@ -107,59 +142,60 @@ const UserPage = () => {
     }
   };
 
-  const { userid } = useParams();
   useEffect(async () => {
     init();
   }, [contractAPI]);
   return (
     <Container maxWidth="xl" className={classes.root}>
-      <Typography variant="h2" noWrap>
-        User {userid}
-      </Typography>
-      <div>
-        <Typography variant="h2">Tokens: {tokens}</Typography>
-        <Button variant="outlined" onClick={handleClickOpen}>
-          Token to ether
-        </Button>{" "}
-        <Button variant="outlined" onClick={handleClickOpenEther}>
-          Ether to token
-        </Button>
-      </div>
-      <Typography variant="h2">Total Up Votes: {totalUpVotes}</Typography>
-      <Typography variant="h2">Total Down Votes: {totalDownVotes}</Typography>
-      <Typography variant="h2">IssuedPosts: </Typography>
-      <List>
-        <Divider />
+      <div className={classes.content}>
+        <Typography variant="h2" noWrap>
+          User {userid}
+        </Typography>
+        <div>
+          <Typography variant="h2">Tokens: {tokens}</Typography>
+          <Button variant="outlined" onClick={handleClickOpen}>
+            Token to ether
+          </Button>{" "}
+          <Button variant="outlined" onClick={handleClickOpenEther}>
+            Ether to token
+          </Button>
+        </div>
+        <Typography variant="h2">Total Up Votes: {totalUpVotes}</Typography>
+        <Typography variant="h2">Total Down Votes: {totalDownVotes}</Typography>
+        <Typography variant="h2">IssuedPosts: </Typography>
+        <List>
+          <Divider />
 
-        {postIds.map((id, idx) => (
-          <div key={`post_${idx}`}>
-            <ListItem button component={Link} to={`/post/${id}`}>
-              <ListItemText>post {id}</ListItemText>
-            </ListItem>
-            <Divider />
-          </div>
-        ))}
-      </List>
-      <Typography variant="h2">IssuedAnswers: </Typography>
-      <List>
-        {answers.map((answer, idx) => (
-          <div key={`answer_${idx}`}>
-            <Button component={Link} to={`/post/${answer.parentPostId}`}>
-              <Typography variant="h3">
-                From Post {answer.parentPostId}
-              </Typography>
-            </Button>
-            <div
-              style={{
-                border: "1px gray solid",
-                margin: "8px",
-              }}
-            >
-              <AnswerItem {...answer} />
+          {postIds.map((id, idx) => (
+            <div key={`post_${idx}`}>
+              <ListItem button component={Link} to={`/post/${id}`}>
+                <ListItemText>post {id}</ListItemText>
+              </ListItem>
+              <Divider />
             </div>
-          </div>
-        ))}
-      </List>
+          ))}
+        </List>
+        <Typography variant="h2">IssuedAnswers: </Typography>
+        <List>
+          {answers.map((answer, idx) => (
+            <div key={`answer_${idx}`}>
+              <Button component={Link} to={`/post/${answer.parentPostId}`}>
+                <Typography variant="h3">
+                  From Post {answer.parentPostId}
+                </Typography>
+              </Button>
+              <div
+                style={{
+                  border: "1px gray solid",
+                  margin: "8px",
+                }}
+              >
+                <AnswerItem {...answer} />
+              </div>
+            </div>
+          ))}
+        </List>
+      </div>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -229,6 +265,13 @@ const UserPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={snackbarProp.open}
+        autoHideDuration={2000}
+        onClose={() => setSnackbarProp({ ...snackbarProp, open: false })}
+      >
+        <Alert severity={snackbarProp.status}>{snackbarProp.message}</Alert>
+      </Snackbar>
     </Container>
   );
 };

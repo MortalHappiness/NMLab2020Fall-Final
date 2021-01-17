@@ -82,7 +82,6 @@ const PostPage = () => {
     if (contractAPI) {
       try {
         const res = await contractAPI.getPostsByIds([postid]);
-        console.log(res);
         setPost({ ...res[0], id: postid });
       } catch (err) {
         console.error(err);
