@@ -66,6 +66,7 @@ contract App {
     uint256 upVotes;
     uint256 downVotes;
     uint256 timestamp;
+    uint256 parentPostId;
   }
 
   struct User {
@@ -136,6 +137,7 @@ contract App {
     answerView.upVotes = answer.upVotes;
     answerView.downVotes = answer.downVotes;
     answerView.timestamp = answer.timestamp;
+    answerView.parentPostId = answer.parentPostId;
 
     return answerView;
   }
