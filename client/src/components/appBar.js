@@ -75,7 +75,6 @@ export default function AppBar() {
     if (contractAPI) {
       try {
         const res = await contractAPI.getAccountInfo();
-        console.log(res);
         setUserDisplay(res.userAddress);
         setIsUser(true);
       } catch (err) {

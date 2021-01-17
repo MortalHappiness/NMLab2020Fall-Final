@@ -16,6 +16,7 @@ class ContractAPI {
     this.TOKEN_VALUE = null;
     this.INIT_TOKENS = null;
     this.MIN_POST_CREATE_TOKEN_FEE = null;
+    this.EXPIRE_TIME = null;
   }
 
   // initialize function
@@ -37,11 +38,13 @@ class ContractAPI {
     this.TOKEN_VALUE = await this.getTokenValue();
     this.INIT_TOKENS = await this.getInitTokens();
     this.MIN_POST_CREATE_TOKEN_FEE = await this.getMinPostCreateTokenFee();
+    this.EXPIRE_TIME = await this.getExpireTime();
     console.log(
       this.ACCOUNT_CREATE_ETHER_FEE,
       this.TOKEN_VALUE,
       this.INIT_TOKENS,
-      this.MIN_POST_CREATE_TOKEN_FEE
+      this.MIN_POST_CREATE_TOKEN_FEE,
+      this.EXPIRE_TIME
     );
   }
 
@@ -60,6 +63,10 @@ class ContractAPI {
 
   getMinPostCreateTokenFee() {
     return this.contract.methods.getMinPostCreateTokenFee().call();
+  }
+
+  getExpireTime() {
+    return this.contract.methods.getExpireTime().call();
   }
 
   // mutate function
@@ -107,7 +114,6 @@ class ContractAPI {
   }
 
   createAccount() {
-    console.log(this.ACCOUNT_CREATE_ETHER_FEE);
     return this.contract.methods.createAccount().send({
       from: this.accounts[0],
       value: this.ACCOUNT_CREATE_ETHER_FEE,
@@ -121,9 +127,10 @@ class ContractAPI {
     });
   }
 
-  ether2token() {
-    return this.contract.methods.ether2token().call().send({
+  ether2token(ether) {
+    return this.contract.methods.ether2token().send({
       from: this.accounts[0],
+      value: ether * this.TOKEN_VALUE,
       gas: this.gas,
     });
   }

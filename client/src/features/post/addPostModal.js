@@ -154,13 +154,14 @@ const AddPostModal = (props) => {
         />
         <Box mt={1} mb={1} className={classes.box}>
           <Typography>Tags</Typography>
-          {chosedTagList.map((tag) => (
+          {chosedTagList.map((tag, idx) => (
             <Chip
               className={classes.chip}
               variant="outlined"
               label={tag}
               onClick={() => handleRemoveTag(tag)}
               color="primary"
+              key={`chipchosed_${idx}`}
             />
           ))}
         </Box>
@@ -171,13 +172,14 @@ const AddPostModal = (props) => {
         >
           ---- Choose your tag from below ----
         </Typography>
-        {unchosedTagList.map((tag) => (
+        {unchosedTagList.map((tag, idx) => (
           <Chip
             className={classes.chip}
             variant="outlined"
             label={tag}
             onClick={() => handleAddTag(tag)}
             color="primary"
+            key={`chipunchosed_${idx}`}
           />
         ))}
 
