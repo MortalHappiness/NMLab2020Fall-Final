@@ -131,6 +131,10 @@ class ContractAPI {
   token2ether(tokens) {
     return this.contract.methods.token2ether(tokens).call();
   }
+
+  getUsers() {
+    return this.contract.methods.getUsers().call();
+  }
 }
 
 export default ContractAPI;

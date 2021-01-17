@@ -7,7 +7,7 @@ export const answerSlice = createSlice({
   },
   reducers: {
     setAnswerList: (state, action) => {
-      state.answerList = action.payload;
+      state.answerList = action.payload.slice().reverse();
     },
   },
 });

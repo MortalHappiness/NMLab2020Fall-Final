@@ -107,8 +107,12 @@ const AddPostModal = (props) => {
 
   useEffect(async () => {
     if (contractAPI) {
-      const user = await contractAPI.getAccountInfo();
-      setUserToken(user.tokens);
+      try {
+        const user = await contractAPI.getAccountInfo();
+        setUserToken(user.tokens);
+      } catch (err) {
+        console.error(err);
+      }
     }
   }, [contractAPI]);
 

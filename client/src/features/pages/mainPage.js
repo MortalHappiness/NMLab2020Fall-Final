@@ -5,7 +5,7 @@ import Container from "@material-ui/core/Container";
 
 import PostList from "../post/postList";
 import TagList from "../tagList";
-import Ranking from "../../components/ranking";
+import Ranking from "../user/ranking";
 import { setPostList } from "../post/postSlice";
 
 import { ContractContext } from "../../contractContext";
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
   postList: {
     flexBasis: "800px",
-    maxWidth: '60%',
+    // maxWidth: '60%',
     marginRight: theme.spacing(1),
     marginLeft: theme.spacing(1),
     [theme.breakpoints.down("sm")]: {
@@ -44,7 +44,7 @@ const Main = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const contractAPI = useContext(ContractContext);
-  const [postFilter, setPostFilter] = useState(null)
+  const [postFilter, setPostFilter] = useState(null);
 
   // Initialize Post List
   useEffect(async () => {

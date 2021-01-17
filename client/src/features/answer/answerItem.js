@@ -11,6 +11,8 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 import CardHeader from "@material-ui/core/CardHeader";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 
 import { EditorState, convertFromRaw } from "draft-js";
 
@@ -56,6 +58,11 @@ const AnswerItem = ({ id, content, author, timestamp, downVotes, upVotes }) => {
   const contractAPI = useContext(ContractContext);
   const [upVoteCnt, setUpVoteCnt] = useState(parseInt(upVotes)); // votes type are string!
   const [downVoteCnt, setDownVoteCnt] = useState(parseInt(downVotes)); // votes type are string!
+  const [snackbarProp, setSnackbarProp] = useState({
+    open: false,
+    message: "",
+    status: "null",
+  });
 
   const [displayerState, setDisplayerState] = useState(() =>
     EditorState.createEmpty()
@@ -64,13 +71,39 @@ const AnswerItem = ({ id, content, author, timestamp, downVotes, upVotes }) => {
   const displayTime = timeFromNow(timestamp);
   const handleClickUpThumb = async () => {
     // Todo Revert, you have thumbed before
-    await contractAPI.increaseUpVotes(id);
-    setUpVoteCnt(upVoteCnt + 1);
+    try {
+      await contractAPI.increaseUpVotes(id);
+      setSnackbarProp({
+        open: true,
+        message: `UpVote Successfully!`,
+        status: "success",
+      });
+      setUpVoteCnt(upVoteCnt + 1);
+    } catch (err) {
+      setSnackbarProp({
+        open: true,
+        message: `You shouldn't vote the same answer again !`,
+        status: "error",
+      });
+    }
   };
   const handleClickDownThumb = async () => {
     // Todo Revert, you have thumbed before
-    await contractAPI.increaseDownVotes(id);
-    setDownVoteCnt(downVoteCnt + 1);
+    try {
+      await contractAPI.increaseDownVotes(id);
+      setSnackbarProp({
+        open: true,
+        message: `DownVote Successfully!`,
+        status: "success",
+      });
+      setDownVoteCnt(downVoteCnt + 1);
+    } catch (err) {
+      setSnackbarProp({
+        open: true,
+        message: `You shouldn't vote the same answer again !`,
+        status: "error",
+      });
+    }
   };
 
   useEffect(() => {
@@ -127,6 +160,13 @@ const AnswerItem = ({ id, content, author, timestamp, downVotes, upVotes }) => {
           </CardContent>
         </div>
       </div>
+      <Snackbar
+        open={snackbarProp.open}
+        autoHideDuration={2000}
+        onClose={() => setSnackbarProp({ ...snackbarProp, open: false })}
+      >
+        <Alert severity={snackbarProp.status}>{snackbarProp.message}</Alert>
+      </Snackbar>
     </ListItem>
   );
 };

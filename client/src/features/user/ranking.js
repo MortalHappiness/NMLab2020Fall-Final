@@ -1,42 +1,15 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
+
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 
-const rankingList = [
-  {
-    id: "0xA621ac2553470963c155475001D1d4fff36eeD68",
-    token: 999999,
-  },
-  {
-    id: "0x2A70086F128E1951b5D7a32A9F1d176FC25BB801",
-    token: 888888,
-  },
-  {
-    id: "0x2A70086F128E1951b5D7a32A9F1d176FC25BB801",
-    token: 777773,
-  },
-  {
-    id: "0x2A70086F128E1951b5D7a32A9F1d176FC25BB801",
-    token: 885555,
-  },
-  {
-    id: "0x2A70086F128E1951b5D7a32A9F1d176FC25BB801",
-    token: 435348,
-  },
-  {
-    id: "0x2A70086F128E1951b5D7a32A9F1d176FC25BB801",
-    token: 234888,
-  },
-  {
-    id: "0x2A70086F128E1951b5D7a32A9F1d176FC25BB801",
-    token: 188888,
-  },
-];
+import { ContractContext } from "../../contractContext";
 
 const useStyles = makeStyles((theme) => ({
   ranking: {
@@ -49,13 +22,36 @@ const useStyles = makeStyles((theme) => ({
 
 const Ranking = () => {
   const classes = useStyles();
+  const [rankingList, setRankingList] = useState([]);
+  const contractAPI = useContext(ContractContext);
+
+  useEffect(async () => {
+    if (contractAPI) {
+      const res = await contractAPI.getUsers();
+      const tmp = [];
+      res.map((r) => {
+        if (r.userAddress !== "0x0000000000000000000000000000000000000000")
+          tmp.push({
+            userAddress: r.userAddress,
+            votes: parseInt(r.totalUpVotes) - parseInt(r.totalDownVotes),
+          });
+      });
+      tmp.sort((a, b) => (a.votes < b.votes ? 1 : -1)).slice(0, 10);
+      setRankingList(tmp);
+    }
+  }, [contractAPI]);
   return (
     <div>
-      <Typography variant="h2">Ranking</Typography>
+      <Typography variant="h2">Most Voted</Typography>
       <List>
-        {rankingList.map(({ id, token }, idx) => (
+        {rankingList.map(({ userAddress, votes }, idx) => (
           <div key={idx}>
-            <ListItem style={{ paddingRight: 0, paddingLeft: 0 }}>
+            <ListItem
+              button
+              component={Link}
+              to={`/user/${userAddress}`}
+              style={{ paddingRight: 0, paddingLeft: 0 }}
+            >
               <div className={classes.ranking}>
                 <Typography style={{ margin: 8 }} variant="h3" color="initial">
                   <strong>{`${idx + 1}`}</strong>
@@ -65,10 +61,10 @@ const Ranking = () => {
                   style={{ flexGrow: 1 }}
                   noWrap
                 >
-                  {id}...
+                  {userAddress}...
                 </Typography>
                 <Typography variant="body1" color="textSecondary">
-                  {token}
+                  {votes}
                 </Typography>
               </div>
             </ListItem>
