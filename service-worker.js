@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/NMLab2020Fall-Final/precache-manifest.0daece128f1f03eaa539cce15d40d902.js"
+  "/NMLab2020Fall-Final/precache-manifest.f1b355e876ed06ff14e698a6138e4761.js"
 );
 
 self.addEventListener('message', (event) => {
