@@ -12,11 +12,11 @@ import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 import CardHeader from "@material-ui/core/CardHeader";
 
-import { EditorState, convertFromRaw } from 'draft-js';
+import { EditorState, convertFromRaw } from "draft-js";
 
 import { timeFromNow } from "../../utils";
 
-import ContractContext from "../../contractContext";
+import { ContractContext } from "../../contractContext";
 import RichTextDisplayer from "../utils/textDisplayer";
 
 const useStyles = makeStyles((theme) => ({
@@ -51,20 +51,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AnswerItem = ({ content, author, timestamp, downVotes, upVotes }) => {
+const AnswerItem = ({ id, content, author, timestamp, downVotes, upVotes }) => {
   const classes = useStyles();
   const contractAPI = useContext(ContractContext);
-  const [voteCnt, setVoteCnt] = useState(parseInt(upVotes)); // votes type are string!
+  const [upVoteCnt, setUpVoteCnt] = useState(parseInt(upVotes)); // votes type are string!
+  const [downVoteCnt, setDownVoteCnt] = useState(parseInt(downVotes)); // votes type are string!
 
-  const [displayerState, setDisplayerState] = useState(
-    () => EditorState.createEmpty(),
-  )
+  const [displayerState, setDisplayerState] = useState(() =>
+    EditorState.createEmpty()
+  );
 
   const displayTime = timeFromNow(timestamp);
-  const handleClickThumb = async () => {
-    // const res = await contractAPI.increaseUpVotes();
-    // console.log(res);
-    setVoteCnt(voteCnt + 1);
+  const handleClickUpThumb = async () => {
+    // Todo Revert, you have thumbed before
+    await contractAPI.increaseUpVotes(id);
+    setUpVoteCnt(upVoteCnt + 1);
+  };
+  const handleClickDownThumb = async () => {
+    // Todo Revert, you have thumbed before
+    await contractAPI.increaseDownVotes(id);
+    setDownVoteCnt(downVoteCnt + 1);
   };
 
   useEffect(() => {
@@ -73,7 +79,7 @@ const AnswerItem = ({ content, author, timestamp, downVotes, upVotes }) => {
         EditorState.createWithContent(convertFromRaw(JSON.parse(content)))
       );
     }
-  }, [content])
+  }, [content]);
 
   return (
     <ListItem className={classes.root} component={Card} variant="outlined">
@@ -82,15 +88,25 @@ const AnswerItem = ({ content, author, timestamp, downVotes, upVotes }) => {
           <IconButton
             aria-label="This is a good answer"
             color="primary"
-            onClick={handleClickThumb}
+            onClick={handleClickUpThumb}
           >
             <ThumbUpIcon className={classes.thumbUpIcon} />
           </IconButton>
           <Typography variant="h3" color="primary">
-            {voteCnt}
+            {upVoteCnt}
+          </Typography>
+          <IconButton
+            aria-label="This is a bad answer"
+            color="secondary"
+            onClick={handleClickDownThumb}
+          >
+            <ThumbDownIcon className={classes.thumbUpIcon} />
+          </IconButton>
+          <Typography variant="h3" color="secondary">
+            {downVoteCnt}
           </Typography>
         </div>
-        <div style={{ width: '100%' }}>
+        <div style={{ width: "100%" }}>
           <CardHeader
             className={classes.cardHeader}
             avatar={

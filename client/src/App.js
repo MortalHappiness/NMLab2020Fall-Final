@@ -8,6 +8,7 @@ import store from "./store";
 import AppBar from "./components/appBar";
 import Main from "./features/pages/mainPage";
 import PostPage from "./features/pages/postPage";
+import UserPage from "./features/pages/userPage";
 
 import Web3Provider from "./Web3";
 import ContractProvider from "./contractContext";
@@ -53,6 +54,9 @@ function MyRoute() {
       <Switch>
         <Route path="/post/:postid">
           <PostPage />
+        </Route>
+        <Route path="/user/:userid">
+          <UserPage />
         </Route>
         <Route path="/">
           <Main />

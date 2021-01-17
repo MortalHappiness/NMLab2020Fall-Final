@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import Bar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -88,7 +88,13 @@ export default function AppBar() {
               知識+ D-App
             </Typography>
             {isUser ? (
-              <Button color="inherit">{userDisplay}</Button>
+              <Button
+                color="inherit"
+                component={Link}
+                to={`/user/${userDisplay}`}
+              >
+                {userDisplay}
+              </Button>
             ) : (
               <Button color="inherit" onClick={handleSignUp}>
                 {userDisplay}
