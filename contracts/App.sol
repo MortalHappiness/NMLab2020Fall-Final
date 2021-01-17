@@ -14,9 +14,12 @@ contract App {
   uint256 constant TOKEN_VALUE = 0.000001 ether;
   uint256 constant INIT_TOKENS = 500;
   uint256 constant MIN_POST_CREATE_TOKEN_FEE = 100;
+  uint256 constant EXPIRE_TIME = 3 minutes;
 
   // ========================================
   // Events
+
+  event Expired(uint256 postId);
 
   // ========================================
   // Struct definitions
@@ -174,6 +177,10 @@ contract App {
 
   function getMinPostCreateTokenFee() external pure returns (uint256) {
     return MIN_POST_CREATE_TOKEN_FEE;
+  }
+
+  function getExpireTime() external pure returns (uint256) {
+    return EXPIRE_TIME;
   }
 
   // ========================================
@@ -334,5 +341,35 @@ contract App {
     uint256 money = tokens.mul(TOKEN_VALUE);
     user.tokens = user.tokens.sub(tokens);
     msg.sender.transfer(money);
+  }
+
+  function requestForExpire(uint256 postId) external {
+    require(postId < _posts.length, "Invalid postId");
+    Post storage post = _posts[postId];
+    require(!post.isExpired, "The post has expired.");
+    require(now.sub(post.timestamp) > EXPIRE_TIME,
+            "The post does not reach expire time now.");
+    post.isExpired = true;
+    // Give tokens to the user who has the most votes (upVotes - downVotes)
+    // But upVotes must be greater than downVotes
+    uint256 maxVotes = 0;
+    uint256 maxVotesAnswerId = 0;
+    Answer memory answer;
+    for (uint256 i = 0; i < post.answerIds.length; ++i) {
+      answer = _answers[post.answerIds[i]];
+      if (answer.upVotes > answer.downVotes) {
+        uint256 votes = answer.upVotes - answer.downVotes;
+        if (votes > maxVotes) {
+          maxVotes = votes;
+          maxVotesAnswerId = answer.id;
+        }
+      }
+    }
+    if (maxVotes != 0) {
+      answer = _answers[maxVotesAnswerId];
+      User storage user = _users[_userIds[answer.author]];
+      user.tokens = user.tokens.add(post.tokens);
+    }
+    emit Expired(postId);
   }
 }
