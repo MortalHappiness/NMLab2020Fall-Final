@@ -19,7 +19,7 @@ contract App {
   // ========================================
   // Events
 
-  event Expired(uint256 postId);
+  event PostExpired(uint256 postId);
 
   // ========================================
   // Struct definitions
@@ -370,6 +370,6 @@ contract App {
       User storage user = _users[_userIds[answer.author]];
       user.tokens = user.tokens.add(post.tokens);
     }
-    emit Expired(postId);
+    emit PostExpired(postId);
   }
 }
