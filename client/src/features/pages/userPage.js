@@ -160,6 +160,7 @@ const UserPage = () => {
             Ether to token
           </Button>
         </div>
+        <br />
         <Typography variant="h2">Total Up Votes: {totalUpVotes}</Typography>
         <Typography variant="h2">Total Down Votes: {totalDownVotes}</Typography>
         <Typography variant="h2">IssuedPosts: </Typography>

@@ -132,7 +132,27 @@ const Post = ({
           >
             Request for expired
           </Button>
-        ) : null}
+        ) : isExpired ? (
+          <Button
+            className={classes.requestExpireBtn}
+            size="medium"
+            disabled
+            color="secondary"
+            variant="outlined"
+          >
+            Expired
+          </Button>
+        ) : (
+          <Button
+            className={classes.requestExpireBtn}
+            size="medium"
+            disabled
+            color="secondary"
+            variant="outlined"
+          >
+            Not yet expired
+          </Button>
+        )}
       </CardActions>
     </Card>
   );
