@@ -14,7 +14,7 @@
   A decentralized question answering system on Ethereum Ropsten Network.
 </p>
 <p align="center">
-  <a href="https://mortalhappiness.github.io/NMLab2020Fall-Final/">View Demo</a>
+  <a href="https://mortalhappiness.github.io/NMLab2020Fall-Final/">View DApp</a>
 </p>
 
 <!-- TABLE OF CONTENTS -->
@@ -41,6 +41,9 @@
 </details>
 
 ## About the Project
+![](https://i.imgur.com/V1wSNLF.png)
+![](https://i.imgur.com/YnS1YzX.png)
+
 This is a decentralized question answering system on **Ethereum Ropsten Network**. One can get answers and share knowledge with others.
 
 Besides, one can rate the upvote / downvote answers and after several blocktime, the system will pay bounty to the best voted answer's provider.
